@@ -52,6 +52,8 @@
     /* Base */
     html { scroll-behavior: smooth; }
     body { -webkit-font-smoothing: antialiased; }
+    /* ハッシュナビゲーション時にスティッキーヘッダー分オフセット */
+    section[id] { scroll-margin-top: 72px; }
 
     /* Flow line animation */
     .flow-line {
@@ -1337,6 +1339,17 @@
   }, { threshold: 0.1 });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // === ハッシュナビゲーション：ページ読み込み後に正確な位置へ再スクロール ===
+  if (window.location.hash) {
+    const target = document.querySelector(window.location.hash);
+    if (target) {
+      // reveal アニメーションが落ち着いた後にスクロール
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+  }
 </script>
 </body>
 </html>
