@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>収益構造モデル | 社内資料</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;900&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    body { font-family: 'Noto Sans JP', 'Inter', sans-serif; background: #F8FAFC; }
+    .section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    input[type="range"] {
+      -webkit-appearance: none; width: 100%; height: 6px;
+      border-radius: 3px; background: #E2E8F0; outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 20px; height: 20px;
+      border-radius: 50%; background: #4F46E5; cursor: pointer;
+      box-shadow: 0 1px 4px rgba(79,70,229,0.3);
+    }
+    input[type="range"].green::-webkit-slider-thumb { background: #059669; }
+    input[type="range"].pink::-webkit-slider-thumb { background: #DB2777; }
+    input[type="range"].amber::-webkit-slider-thumb { background: #D97706; }
+    .profit-bar { transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .number-animate { transition: all 0.3s ease; }
+  </style>
+</head>
+<body class="text-slate-800">
+
+<!-- ========== HEADER ========== -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <img src="C:/Users/naoto/OneDrive/デスクトップ/logo/PNG/recogram_logo_01.png"
+        alt="recogram" class="h-7 w-auto object-contain" onerror="this.style.display='none'" />
+      <span class="text-xs font-semibold text-slate-400 border-l border-slate-200 pl-3">社内向け 収益構造モデル</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs text-slate-400">
+      <a href="products.html" class="hover:text-indigo-600 transition-colors">← 商品構成マップへ</a>
+      <span>2025年版</span>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-7xl mx-auto px-6 py-12">
+
+  <!-- ========== TITLE ========== -->
+  <div class="mb-14 text-center">
+    <div class="inline-flex items-center gap-2 bg-slate-100 text-slate-500 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-widest">
+      INTERNAL USE ONLY
+    </div>
+    <h1 class="text-4xl font-black text-slate-900 mb-3">収益構造モデル</h1>
+    <p class="text-slate-500 text-base">料金体系 / キャパシティ / ユニットエコノミクス / 売上シミュレーター</p>
+  </div>
+
+  <!-- ========== 01. 料金体系 ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="tag" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">01 — 料金体系一覧</h2>
+    </div>
+
+    <!-- Legend -->
+    <div class="flex flex-wrap gap-4 mb-6 text-xs font-semibold">
+      <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-indigo-500"></span>月額ストック収益</div>
+      <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span>成果連動（広告費比例）</div>
+      <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500"></span>スポット（プロジェクト型）</div>
+      <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-400"></span>別途・TBD</div>
+    </div>
+
+    <div class="grid md:grid-cols-3 xl:grid-cols-4 gap-4">
+
+      <!-- コボット基本 -->
+      <div class="bg-white rounded-xl border-2 border-indigo-100 p-5 relative">
+        <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
+        <div class="pl-1">
+          <div class="section-label text-indigo-400 mb-2">月額ストック</div>
+          <div class="font-bold text-slate-900 text-sm mb-1">コボット 基本プラン</div>
+          <div class="text-2xl font-black text-indigo-600">¥50,000<span class="text-sm font-normal text-slate-400">/月</span></div>
+          <div class="mt-2 text-xs text-slate-500">原価ほぼゼロ → 利益率≒100%</div>
+          <div class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">1人15社まで</div>
+        </div>
+      </div>
+
+      <!-- コボット + レポーティング -->
+      <div class="bg-white rounded-xl border-2 border-indigo-100 p-5 relative">
+        <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
+        <div class="pl-1">
+          <div class="section-label text-indigo-400 mb-2">月額ストック</div>
+          <div class="font-bold text-slate-900 text-sm mb-1">コボット + レポーティング</div>
+          <div class="text-2xl font-black text-indigo-600">¥70,000<span class="text-sm font-normal text-slate-400">+/月</span></div>
+          <div class="mt-2 text-xs text-slate-500">月次レポート作成工数が加わる</div>
+          <div class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">1人15社まで</div>
+        </div>
+      </div>
+
+      <!-- AI面接・AI受電 -->
+      <div class="bg-white rounded-xl border-2 border-slate-100 p-5 relative">
+        <div class="absolute top-0 left-0 w-1 h-full bg-slate-400 rounded-l-xl"></div>
+        <div class="pl-1">
+          <div class="section-label text-slate-400 mb-2">月額 / 従量</div>
+          <div class="font-bold text-slate-900 text-sm mb-1">AI面接・AI受電</div>
+          <div class="text-xl font-black text-slate-500">別途<span class="text-sm font-normal text-slate-400"> 応相談</span></div>
+          <div class="mt-2 text-xs text-slate-500">利用件数・機能による。コボットと組み合わせ</div>
+          <div class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">TBD</div>
+        </div>
+      </div>
+
+      <!-- 広告運用 -->
+      <div class="bg-white rounded-xl border-2 border-emerald-100 p-5 relative">
+        <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500 rounded-l-xl"></div>
+        <div class="pl-1">
+          <div class="section-label text-emerald-500 mb-2">成果連動</div>
+          <div class="font-bold text-slate-900 text-sm mb-1">Indeed / Instagram 広告運用</div>
+          <div class="text-2xl font-black text-emerald-600">広告費×20%</div>
+          <div class="mt-2 text-xs text-slate-500">最低広告費 ¥500,000/月が採算ライン</div>
+          <div class="mt-1 text-xs font-bold text-emerald-600">純利益 = 広告費 × 20%</div>
+          <div class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">1人10社まで</div>
+        </div>
+      </div>
+
+      <!-- RPO -->
+      <div class="bg-white rounded-xl border-2 border-indigo-100 p-5 relative">
+        <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
+        <div class="pl-1">
+          <div class="section-label text-indigo-400 mb-2">月額ストック</div>
+          <div class="font-bold text-slate-900 text-sm mb-1">RPO（採用代行）</div>
+          <div class="text-2xl font-black text-indigo-600">¥150,000<span class="text-sm font-normal text-slate-400">+/月</span></div>
+          <div class="mt-2 text-xs text-slate-500">アルバイト中心。人件費の50%を利益として計上</div>
+          <div class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">要件ヒヤリング・電話対応</div>
+        </div>
+      </div>
+
+      <!-- 採用ピッチ資料 -->
+      <div class="bg-white rounded-xl border-2 border-amber-100 p-5 relative">
+        <div class="absolute top-0 left-0 w-1 h-full bg-amber-500 rounded-l-xl"></div>
+        <div class="pl-1">
+          <div class="section-label text-amber-500 mb-2">スポット</div>
+          <div class="font-bold text-slate-900 text-sm mb-1">採用ピッチ資料制作</div>
+          <div class="text-2xl font-black text-amber-600">¥500,000<span class="text-sm font-normal text-slate-400">〜</span></div>
+          <div class="mt-2 text-xs text-slate-500">採用ブランド強化。RPO・コンサルのクロスセル</div>
+        </div>
+      </div>
+
+      <!-- 採用HP -->
+      <div class="bg-white rounded-xl border-2 border-amber-100 p-5 relative">
+        <div class="absolute top-0 left-0 w-1 h-full bg-amber-500 rounded-l-xl"></div>
+        <div class="pl-1">
+          <div class="section-label text-amber-500 mb-2">スポット</div>
+          <div class="font-bold text-slate-900 text-sm mb-1">採用ホームページ制作</div>
+          <div class="text-2xl font-black text-amber-600">¥1,000,000<span class="text-sm font-normal text-slate-400">〜</span></div>
+          <div class="mt-2 text-xs text-slate-500">Indeed・SNSとの導線設計込み</div>
+        </div>
+      </div>
+
+      <!-- コンサル系 -->
+      <div class="bg-white rounded-xl border-2 border-slate-100 p-5 relative">
+        <div class="absolute top-0 left-0 w-1 h-full bg-slate-400 rounded-l-xl"></div>
+        <div class="pl-1">
+          <div class="section-label text-slate-400 mb-2">コンサルティング</div>
+          <div class="font-bold text-slate-900 text-sm mb-1">人材構成比分析・採用要件定義</div>
+          <div class="text-xl font-black text-slate-500">別途<span class="text-sm font-normal text-slate-400"> 応相談</span></div>
+          <div class="mt-2 text-xs text-slate-500">1人7社が上限。深いデータ分析・戦略設計</div>
+          <div class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">1人7社まで</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== 02. キャパシティモデル ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="users" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">02 — キャパシティモデル（1担当者が満枠になったとき）</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5">
+
+      <!-- 兼任担当（コボット+広告運用） -->
+      <div class="bg-white rounded-2xl border-2 border-indigo-200 p-6 relative">
+        <div class="absolute -top-3 left-5">
+          <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">推奨モデル</span>
+        </div>
+        <div class="flex items-center justify-between mb-5 mt-2">
+          <div>
+            <div class="section-label text-indigo-500 mb-1">兼任担当者（コボット＋広告運用）</div>
+            <div class="font-bold text-slate-900">1人あたり 満枠：15社</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+            <i data-lucide="layers" class="w-5 h-5 text-indigo-600"></i>
+          </div>
+        </div>
+        <!-- 内訳バー -->
+        <div class="space-y-2 mb-5">
+          <div class="flex justify-between text-xs text-slate-500 mb-1">
+            <span>コボット 15社</span><span class="font-bold text-indigo-600">¥750,000</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-2.5">
+            <div class="bg-indigo-400 h-2.5 rounded-full" style="width:45%"></div>
+          </div>
+          <div class="flex justify-between text-xs text-slate-500 mb-1 mt-2">
+            <span>広告運用アップセル 9社（60%転換）</span><span class="font-bold text-emerald-600">¥900,000</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-2.5">
+            <div class="bg-emerald-400 h-2.5 rounded-full" style="width:55%"></div>
+          </div>
+        </div>
+        <div class="space-y-2 pt-4 border-t border-slate-100">
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">月次売上合計</span>
+            <span class="font-bold text-slate-900">¥1,650,000</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">人件費（年収¥500万・社保込）</span>
+            <span class="font-bold text-red-500">− ¥540,000</span>
+          </div>
+          <div class="flex justify-between text-sm border-t border-slate-100 pt-2 mt-1">
+            <span class="font-bold text-slate-700">月次純利益（人件費差引後）</span>
+            <span class="font-black text-indigo-600 text-base">¥1,110,000</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">利益率</span>
+            <span class="font-bold text-indigo-600">67%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- コンサル担当 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <div class="section-label text-violet-500 mb-1">コンサル担当者</div>
+            <div class="font-bold text-slate-900">1人あたり 満枠：7社</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
+            <i data-lucide="brain-circuit" class="w-5 h-5 text-violet-600"></i>
+          </div>
+        </div>
+        <div class="space-y-2 mb-5">
+          <div class="flex justify-between text-xs text-slate-500 mb-1">
+            <span>担当可能社数</span><span class="font-bold text-slate-900">7社</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-3">
+            <div class="bg-violet-500 h-3 rounded-full" style="width:47%"></div>
+          </div>
+        </div>
+        <div class="space-y-2 pt-4 border-t border-slate-100">
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">人件費（年収¥500万・社保込）</span>
+            <span class="font-bold text-red-500">− ¥540,000</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">収益化には単価設計が必要</span>
+            <span class="font-bold text-violet-600">別途設計</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">LTV向上への貢献</span>
+            <span class="font-bold text-violet-600">間接的に大</span>
+          </div>
+        </div>
+        <div class="mt-3 bg-violet-50 rounded-lg px-3 py-2 text-xs text-violet-700">
+          採用原稿・面接マニュアル・労働条件見直しまで対応。単独採算より兼任が現実的。
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== 03. ユニットエコノミクス ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">03 — ユニットエコノミクス（1社あたり月次）</h2>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200">
+              <th class="text-left px-6 py-4 text-slate-500 font-semibold text-xs uppercase tracking-widest w-1/4">サービス</th>
+              <th class="text-right px-4 py-4 text-slate-500 font-semibold text-xs uppercase tracking-widest">月次売上</th>
+              <th class="text-right px-4 py-4 text-slate-500 font-semibold text-xs uppercase tracking-widest">月次純利益</th>
+              <th class="text-right px-6 py-4 text-slate-500 font-semibold text-xs uppercase tracking-widest">利益率</th>
+              <th class="px-6 py-4 text-slate-500 font-semibold text-xs uppercase tracking-widest">利益率バー</th>
+              <th class="text-left px-4 py-4 text-slate-500 font-semibold text-xs uppercase tracking-widest">備考</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="hover:bg-indigo-50/30 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+                  <span class="font-semibold">コボット基本</span>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-right font-mono font-bold">¥50,000</td>
+              <td class="px-4 py-4 text-right font-mono font-bold text-indigo-600">¥50,000</td>
+              <td class="px-6 py-4 text-right font-bold text-indigo-600">≒100%</td>
+              <td class="px-6 py-4">
+                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                  <div class="bg-indigo-500 h-2.5 rounded-full profit-bar" style="width:100%"></div>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-xs text-slate-500">原価ほぼゼロ</td>
+            </tr>
+            <tr class="hover:bg-indigo-50/30 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-indigo-400"></div>
+                  <span class="font-semibold">コボット＋レポート</span>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-right font-mono font-bold">¥70,000+</td>
+              <td class="px-4 py-4 text-right font-mono font-bold text-indigo-600">¥65,000〜</td>
+              <td class="px-6 py-4 text-right font-bold text-indigo-600">90%+</td>
+              <td class="px-6 py-4">
+                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                  <div class="bg-indigo-400 h-2.5 rounded-full profit-bar" style="width:92%"></div>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-xs text-slate-500">作成工数コスト少</td>
+            </tr>
+            <tr class="hover:bg-emerald-50/30 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                  <span class="font-semibold">広告運用代行</span>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-right font-mono font-bold">¥100,000<span class="text-xs text-slate-400 font-normal">（手数料）</span></td>
+              <td class="px-4 py-4 text-right font-mono font-bold text-emerald-600">¥100,000</td>
+              <td class="px-6 py-4 text-right font-bold text-emerald-600">20%<span class="text-xs text-slate-400 font-normal">（対広告費）</span></td>
+              <td class="px-6 py-4">
+                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                  <div class="bg-emerald-500 h-2.5 rounded-full profit-bar" style="width:20%"></div>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-xs text-slate-500">広告費¥500k/月前提</td>
+            </tr>
+            <tr class="hover:bg-blue-50/30 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                  <span class="font-semibold">RPO（採用代行）</span>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-right font-mono font-bold">¥150,000+</td>
+              <td class="px-4 py-4 text-right font-mono font-bold text-blue-600">¥75,000+</td>
+              <td class="px-6 py-4 text-right font-bold text-blue-600">50%<span class="text-xs text-slate-400 font-normal">（人件費に対し）</span></td>
+              <td class="px-6 py-4">
+                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                  <div class="bg-blue-500 h-2.5 rounded-full profit-bar" style="width:50%"></div>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-xs text-slate-500">アルバイト活用可</td>
+            </tr>
+            <tr class="hover:bg-amber-50/30 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                  <span class="font-semibold">採用ピッチ資料</span>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-right font-mono font-bold">¥500,000〜</td>
+              <td class="px-4 py-4 text-right font-mono font-bold text-amber-600">応相談</td>
+              <td class="px-6 py-4 text-right font-bold text-slate-400">スポット</td>
+              <td class="px-6 py-4">
+                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                  <div class="bg-amber-400 h-2.5 rounded-full profit-bar" style="width:60%"></div>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-xs text-slate-500">RPO・コンサルとセット</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 04. 売上シミュレーター ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+        <i data-lucide="sliders-horizontal" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">04 — 売上シミュレーター</h2>
+      <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">スライダーを動かしてください</span>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-6">
+
+      <!-- Controls -->
+      <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-7 space-y-8">
+
+        <!-- 兼任担当者（コボット+広告） -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
+              <span class="font-semibold text-sm">兼任担当者（コボット＋広告運用）</span>
+            </div>
+            <span id="kobot-val" class="text-xl font-black text-indigo-600">1<span class="text-sm font-normal text-slate-400">人</span></span>
+          </div>
+          <input type="range" id="kobot-staff" min="0" max="5" value="1" step="1"
+            oninput="updateSim()" />
+          <div class="flex justify-between text-xs text-slate-400 mt-1"><span>0人</span><span>5人</span></div>
+          <div class="mt-2 text-xs text-slate-500 bg-indigo-50 rounded-lg px-3 py-2.5 space-y-1">
+            <div>コボット 15社×¥5万 = <span class="font-bold text-indigo-600">¥750,000</span></div>
+            <div>広告運用 9社×¥10万 = <span class="font-bold text-emerald-600">¥900,000</span></div>
+            <div class="border-t border-indigo-100 pt-1 mt-1">売上合計 <span class="font-bold text-slate-700">¥1,650,000</span> − 人件費 <span class="font-bold text-red-500">¥540,000</span> = <span class="font-bold text-indigo-700" id="kobot-rev-detail">¥1,110,000/月</span></div>
+          </div>
+        </div>
+
+        <!-- RPO担当 -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+              <span class="font-semibold text-sm">RPO担当（アルバイト）</span>
+            </div>
+            <span id="rpo-val" class="text-xl font-black text-blue-600">0<span class="text-sm font-normal text-slate-400">人</span></span>
+          </div>
+          <input type="range" id="rpo-staff" min="0" max="5" value="0" step="1" class="pink"
+            oninput="updateSim()" />
+          <div class="flex justify-between text-xs text-slate-400 mt-1"><span>0人</span><span>5人</span></div>
+          <div class="mt-2 text-xs text-slate-500 bg-blue-50 rounded-lg px-3 py-2.5 space-y-1">
+            <div>人件費¥150k → 請求¥225k → 純利益 <span class="font-bold text-blue-600" id="rpo-rev-detail">¥0/月</span></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl px-4 py-4 text-xs text-slate-500 space-y-1.5">
+          <div class="font-bold text-slate-700 mb-2">計算前提</div>
+          <div>・兼任担当：年収¥500万 → 社保込み人件費 <strong class="text-slate-700">¥540,000/月</strong></div>
+          <div>・コボット転換率60%が広告運用にアップセル（15社→9社）</div>
+          <div>・広告費¥500k/社×20%=¥100k純利益/社</div>
+          <div>・RPO：アルバイト前提。人件費¥150k×150%請求</div>
+          <div>・コンサルは単価未確定のため非表示</div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="lg:col-span-3 space-y-5">
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl p-5 text-white">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">月次売上</div>
+            <div class="text-2xl font-black number-animate" id="total-rev">¥1,875,000</div>
+            <div class="text-slate-400 text-xs mt-1">人件費控除前</div>
+          </div>
+          <div class="bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-5 text-white">
+            <div class="text-xs font-bold text-red-200 uppercase tracking-widest mb-2">月次人件費</div>
+            <div class="text-2xl font-black number-animate" id="total-cost">− ¥540,000</div>
+            <div class="text-red-200 text-xs mt-1">社保込み</div>
+          </div>
+          <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl p-5 text-white">
+            <div class="text-xs font-bold text-emerald-200 uppercase tracking-widest mb-2">月次純利益</div>
+            <div class="text-2xl font-black number-animate" id="total-profit">¥1,185,000</div>
+            <div class="text-emerald-200 text-xs mt-1">人件費差引後</div>
+          </div>
+        </div>
+
+        <!-- Breakdown Bars -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <div class="section-label text-slate-400 mb-5">サービス別 月次純利益 内訳</div>
+
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-sm mb-1.5">
+                <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>コボット（純利益）</span>
+                <span class="font-bold" id="bar-kobot-label">¥750,000</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-3">
+                <div id="bar-kobot" class="bg-indigo-500 h-3 rounded-full profit-bar" style="width:63%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1.5">
+                <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>広告運用（純利益）</span>
+                <span class="font-bold" id="bar-ads-label">¥900,000</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-3">
+                <div id="bar-ads" class="bg-emerald-500 h-3 rounded-full profit-bar" style="width:75%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1.5">
+                <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>RPO（純利益）</span>
+                <span class="font-bold" id="bar-rpo-label">¥0</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-3">
+                <div id="bar-rpo" class="bg-blue-500 h-3 rounded-full profit-bar" style="width:0%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1.5">
+                <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>人件費（兼任担当）</span>
+                <span class="font-bold text-red-500" id="bar-cost-label">− ¥540,000</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-3">
+                <div id="bar-cost" class="bg-red-400 h-3 rounded-full profit-bar" style="width:45%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 pt-4 border-t border-slate-100 grid grid-cols-3 gap-3 text-center">
+            <div>
+              <div class="text-xs text-slate-400 mb-1">兼任担当</div>
+              <div class="font-bold text-slate-900" id="stat-kobot-clients">1人 / 15社</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-400 mb-1">RPO担当</div>
+              <div class="font-bold text-slate-900" id="stat-ads-clients">0人</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-400 mb-1">スタッフ合計</div>
+              <div class="font-bold text-slate-900" id="stat-total-staff">1人</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1人あたり利益 -->
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-5">
+          <div class="section-label text-slate-400 mb-3">スタッフ1人あたり 月次純利益</div>
+          <div class="text-2xl font-black text-slate-900" id="per-head">¥912,500</div>
+          <div class="text-xs text-slate-500 mt-1">（全スタッフ合計÷総人数）</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 05. LTVシナリオ ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="line-chart" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">05 — 1クライアントのLTVシナリオ（12ヶ月）</h2>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+
+      <!-- Chart -->
+      <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-7">
+        <div class="section-label text-slate-400 mb-1">累計売上の推移（1クライアント）</div>
+        <p class="text-xs text-slate-500 mb-5">コボット導入 → 広告運用アップセル → RPO追加の理想シナリオ</p>
+        <canvas id="ltvChart" height="160"></canvas>
+      </div>
+
+      <!-- Milestones -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-7">
+        <div class="section-label text-slate-400 mb-5">アップセルのタイミング</div>
+        <div class="space-y-5">
+          <div class="flex gap-4">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+              <div class="w-0.5 flex-1 bg-indigo-100 mt-1"></div>
+            </div>
+            <div class="pb-5">
+              <div class="text-xs font-bold text-indigo-600 mb-1">1〜2ヶ月目</div>
+              <div class="font-semibold text-slate-900 text-sm">コボット導入</div>
+              <div class="text-xs text-slate-500 mt-1">月次: ¥50,000<br/>リードタイム短縮・現場巻き込み</div>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+              <div class="w-0.5 flex-1 bg-emerald-100 mt-1"></div>
+            </div>
+            <div class="pb-5">
+              <div class="text-xs font-bold text-emerald-600 mb-1">3ヶ月目</div>
+              <div class="font-semibold text-slate-900 text-sm">広告運用 アップセル</div>
+              <div class="text-xs text-slate-500 mt-1">月次: ¥150,000（+¥100k）<br/>不採用理由データで提案</div>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-blue-600 mb-1">6ヶ月目〜</div>
+              <div class="font-semibold text-slate-900 text-sm">RPO / コンサル 追加</div>
+              <div class="text-xs text-slate-500 mt-1">月次: ¥300,000〜（+¥150k）<br/>採用オペレーション全体を握る</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-5 border-t border-slate-100">
+          <div class="section-label text-slate-400 mb-3">12ヶ月累計 LTV</div>
+          <div class="text-3xl font-black text-slate-900">¥2,650,000</div>
+          <div class="text-xs text-slate-500 mt-1">理想シナリオ（コボット+広告+RPO）</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 06. noteコンテンツ ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="pencil" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">06 — noteコンテンツ 投資対効果（参考）</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <div class="section-label text-slate-400 mb-3">1記事あたりコスト</div>
+        <div class="text-2xl font-black text-slate-900">10<span class="text-base font-normal text-slate-500">時間</span></div>
+        <div class="mt-2 text-sm text-slate-500">作成工数。担当者の時給換算でコストが決まる</div>
+        <div class="mt-4 space-y-1 text-xs text-slate-400">
+          <div>時給¥2,000 → 1記事 ¥20,000</div>
+          <div>時給¥3,000 → 1記事 ¥30,000</div>
+          <div>時給¥5,000 → 1記事 ¥50,000</div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <div class="section-label text-slate-400 mb-3">回収期待値</div>
+        <div class="text-2xl font-black text-slate-900">1件<span class="text-base font-normal text-slate-500">受注で回収</span></div>
+        <div class="mt-2 text-sm text-slate-500">コボット1社(¥50k/月)が1本の記事経由で取れれば<br/>6ヶ月で ¥300,000 のリターン</div>
+        <div class="mt-4 bg-indigo-50 rounded-lg px-3 py-2 text-xs text-indigo-700">
+          記事1本 ¥30k コスト → 6ヶ月LTV ¥300k → ROI 900%+
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <div class="section-label text-slate-400 mb-3">運用のポイント</div>
+        <div class="text-sm font-bold text-slate-900 mb-3">誰が書くかが最重要</div>
+        <ul class="space-y-2 text-xs text-slate-500">
+          <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0 mt-0.5"></i>経営者・専門家が書く → 信頼性高、SEO強</li>
+          <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0 mt-0.5"></i>外注 → コスト可視化しやすい</li>
+          <li class="flex items-start gap-2"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5"></i>アルバイト → 品質管理が課題</li>
+          <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0 mt-0.5"></i>AI補助で作成時間を5h以下に圧縮が目標</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <div class="text-center text-xs text-slate-400 pb-10">
+    社内向け資料 — 取り扱いにご注意ください
+  </div>
+
+</div>
+
+<script>
+  lucide.createIcons();
+
+  // ========== LTV Chart ==========
+  const ltvCtx = document.getElementById('ltvChart').getContext('2d');
+  const months = ['1ヶ月', '2ヶ月', '3ヶ月', '4ヶ月', '5ヶ月', '6ヶ月', '7ヶ月', '8ヶ月', '9ヶ月', '10ヶ月', '11ヶ月', '12ヶ月'];
+  const kobotMonthly = [50000, 50000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  const adsMonthly =   [0, 0, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000];
+  const rpoMonthly =   [0, 0, 0, 0, 0, 150000, 150000, 150000, 150000, 150000, 150000, 150000];
+
+  new Chart(ltvCtx, {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'コボット',
+          data: kobotMonthly,
+          backgroundColor: '#6366F1',
+          borderRadius: 4,
+          stack: 'monthly'
+        },
+        {
+          label: '広告運用',
+          data: adsMonthly,
+          backgroundColor: '#10B981',
+          borderRadius: 4,
+          stack: 'monthly'
+        },
+        {
+          label: 'RPO',
+          data: rpoMonthly,
+          backgroundColor: '#3B82F6',
+          borderRadius: 4,
+          stack: 'monthly'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'Noto Sans JP', size: 11 }, boxWidth: 12, padding: 16 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ¥${ctx.raw.toLocaleString()}`,
+            footer: items => `月次合計: ¥${items.reduce((a,b) => a + b.raw, 0).toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, ticks: { font: { family: 'Noto Sans JP', size: 10 } }, grid: { display: false } },
+        y: {
+          stacked: true,
+          ticks: {
+            font: { family: 'Noto Sans JP', size: 10 },
+            callback: v => '¥' + (v / 10000) + '万'
+          },
+          grid: { color: '#F1F5F9' }
+        }
+      }
+    }
+  });
+
+  // ========== Simulator ==========
+  const KOBOT_PER_STAFF   = 15;       // 1人あたりコボット担当社数
+  const KOBOT_PRICE       = 50000;    // コボット単価/社
+  const UPSELL_RATE       = 0.6;      // 広告運用転換率
+  const ADS_PROFIT_PER    = 100000;   // 広告運用純利益/社（広告費50万×20%）
+  const STAFF_COST        = 540000;   // 兼任担当人件費/月（年収500万・社保込）
+  const RPO_COST          = 150000;   // RPOアルバイト人件費/月
+  const RPO_MARKUP        = 1.5;      // RPO請求倍率
+
+  function fmt(n) { return '¥' + Math.abs(n).toLocaleString(); }
+  function fmtSigned(n) { return (n < 0 ? '− ' : '') + fmt(n); }
+
+  function updateSim() {
+    const staffN = parseInt(document.getElementById('kobot-staff').value);
+    const rpoN   = parseInt(document.getElementById('rpo-staff').value);
+
+    // 兼任担当
+    const kobotRev   = staffN * KOBOT_PER_STAFF * KOBOT_PRICE;                        // コボット売上
+    const adsRev     = staffN * KOBOT_PER_STAFF * UPSELL_RATE * ADS_PROFIT_PER;       // 広告運用純利益（=売上）
+    const staffCost  = staffN * STAFF_COST;                                             // 人件費
+    const staffProfit = kobotRev + adsRev - staffCost;                                 // 純利益（人件費差引）
+
+    // RPO
+    const rpoRev    = rpoN * RPO_COST * RPO_MARKUP;   // 請求額
+    const rpoProfit = rpoN * RPO_COST * (RPO_MARKUP - 1); // 純利益
+
+    const totalRev    = kobotRev + adsRev + rpoRev;
+    const totalCost   = staffCost; // RPOコストは請求に内包
+    const totalProfit = staffProfit + rpoProfit;
+    const totalStaff  = staffN + rpoN;
+    const perHead     = totalStaff > 0 ? Math.round(totalProfit / totalStaff) : 0;
+
+    // スケール（最大値に合わせてバーを正規化）
+    const maxScale = Math.max(kobotRev, adsRev, staffCost, 1200000);
+
+    // ラベル更新
+    document.getElementById('kobot-val').innerHTML = staffN + '<span class="text-sm font-normal text-slate-400">人</span>';
+    document.getElementById('rpo-val').innerHTML   = rpoN   + '<span class="text-sm font-normal text-slate-400">人</span>';
+
+    // detail行
+    const detailEl = document.getElementById('kobot-rev-detail');
+    if (detailEl) detailEl.textContent = fmt(staffProfit) + '/月';
+    const rpoDetailEl = document.getElementById('rpo-rev-detail');
+    if (rpoDetailEl) rpoDetailEl.textContent = fmt(rpoProfit) + '/月';
+
+    // KPI Cards
+    document.getElementById('total-rev').textContent    = fmt(totalRev);
+    document.getElementById('total-cost').textContent   = '− ' + fmt(totalCost);
+    document.getElementById('total-profit').textContent = fmt(totalProfit);
+    document.getElementById('per-head').textContent     = fmt(perHead);
+
+    // 内訳バー
+    document.getElementById('bar-kobot-label').textContent = fmt(kobotRev);
+    document.getElementById('bar-ads-label').textContent   = fmt(adsRev);
+    document.getElementById('bar-rpo-label').textContent   = fmt(rpoProfit);
+    document.getElementById('bar-cost-label').textContent  = '− ' + fmt(staffCost);
+
+    document.getElementById('bar-kobot').style.width = (kobotRev   / maxScale * 100) + '%';
+    document.getElementById('bar-ads').style.width   = (adsRev     / maxScale * 100) + '%';
+    document.getElementById('bar-rpo').style.width   = (rpoProfit  / maxScale * 100) + '%';
+    document.getElementById('bar-cost').style.width  = (staffCost  / maxScale * 100) + '%';
+
+    // Stats
+    document.getElementById('stat-kobot-clients').textContent = staffN + '人 / ' + (staffN * KOBOT_PER_STAFF) + '社';
+    document.getElementById('stat-ads-clients').textContent   = rpoN + '人';
+    document.getElementById('stat-total-staff').textContent   = totalStaff + '人';
+  }
+
+  // Init
+  updateSim();
+</script>
+</body>
+</html>

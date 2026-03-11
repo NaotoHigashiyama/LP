@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>商品構成・事業戦略マップ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;900&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    body { font-family: 'Noto Sans JP', 'Inter', sans-serif; background: #F8FAFC; }
+    .gradient-a { background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); }
+    .gradient-b { background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%); }
+    .gradient-upsell { background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); }
+    .gradient-dark { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); }
+    .arrow-right::after {
+      content: '';
+      position: absolute;
+      right: -18px; top: 50%;
+      transform: translateY(-50%);
+      border-left: 18px solid #E2E8F0;
+      border-top: 16px solid transparent;
+      border-bottom: 16px solid transparent;
+      z-index: 10;
+    }
+    .scenario-arrow { width: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    @media print {
+      .no-print { display: none; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body class="text-slate-800">
+
+<!-- ========== HEADER ========== -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-50 no-print">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <img
+        src="C:/Users/naoto/OneDrive/デスクトップ/logo/PNG/recogram_logo_01.png"
+        alt="recogram"
+        class="h-7 w-auto object-contain"
+        onerror="this.style.display='none'"
+      />
+      <span class="text-xs font-semibold text-slate-400 border-l border-slate-200 pl-3">社内向け 商品構成マップ</span>
+    </div>
+    <div class="text-xs text-slate-400">2025年版</div>
+  </div>
+</header>
+
+<div class="max-w-7xl mx-auto px-6 py-12">
+
+  <!-- ========== TITLE ========== -->
+  <div class="mb-14 text-center">
+    <div class="inline-flex items-center gap-2 bg-slate-100 text-slate-500 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-widest">
+      <span>INTERNAL USE ONLY</span>
+    </div>
+    <h1 class="text-4xl font-black text-slate-900 mb-3">商品構成 & 事業戦略マップ</h1>
+    <p class="text-slate-500 text-base">私たちが持つ商材と、どう繋げてクライアントの採用を変えるか</p>
+  </div>
+
+  <!-- ========== PRODUCT MAP ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="layout-grid" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">01 — 商品ラインナップ</h2>
+    </div>
+
+    <!-- Legend -->
+    <div class="flex flex-wrap gap-4 mb-6 text-xs font-semibold">
+      <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-indigo-500"></span>フロント商材 A（データ・Indeed系）</div>
+      <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-pink-500"></span>フロント商材 B（SNS・若手系）</div>
+      <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span>アップセル / クロスセル商材</div>
+    </div>
+
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+      <!-- 商品1: コボット自動化 -->
+      <div class="bg-white rounded-2xl border-2 border-indigo-100 p-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 rounded-l-2xl"></div>
+        <div class="pl-2">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl gradient-a flex items-center justify-center">
+              <i data-lucide="bot" class="w-5 h-5 text-indigo-600"></i>
+            </div>
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">フロントA</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1 text-base leading-snug">面接コボット<br>自動化パッケージ</h3>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            応募〜面接設定〜ステータス入力までを自動化。担当者へのSMS催促と応募者リマインドで、対応遅れ・入力漏れをゼロに近づける。
+          </p>
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0"></i>
+              担当者スマホへの対応遅延SMS通知
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0"></i>
+              ステータス未更新への自動催促
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0"></i>
+              応募者へのリマインド・ナーチャリングSMS
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-400">
+            KPI：面接設定率 / リードタイム短縮
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品2: Indeed Disposition Sync -->
+      <div class="bg-white rounded-2xl border-2 border-indigo-100 p-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 rounded-l-2xl"></div>
+        <div class="pl-2">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-blue-900 flex items-center justify-center">
+              <span class="text-white font-black text-base">in</span>
+            </div>
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">フロントA セット</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1 text-base leading-snug">Indeed<br>Disposition Sync連携</h3>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            コボットに蓄積された「採用・不採用・不採用理由」データをIndeed側に連携。AIに採用基準を学習させ、有効応募率を高める。
+          </p>
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0"></i>
+              採否ステータスのIndeed連携設定
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0"></i>
+              不採用理由の粒度設計（AI学習効率UP）
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0"></i>
+              有効応募率・CPA改善のモニタリング
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-400">
+            KPI：有効応募率 / CPA（採用単価）
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品3: 更新しないSNS -->
+      <div class="bg-white rounded-2xl border-2 border-pink-100 p-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-pink-500 rounded-l-2xl"></div>
+        <div class="pl-2">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl gradient-b flex items-center justify-center">
+              <i data-lucide="instagram" class="w-5 h-5 text-pink-600"></i>
+            </div>
+            <span class="text-xs font-bold text-pink-600 bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">フロントB</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1 text-base leading-snug">「更新しない」採用<br>Instagram構築</h3>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            LP型Instagram（ハイライトを採用サイト化）をワンショットで納品。Z世代へのリーチと求職者の信頼構築を、更新工数ゼロで実現する。
+          </p>
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-pink-500 flex-shrink-0"></i>
+              プロフィール・ハイライト設計
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-pink-500 flex-shrink-0"></i>
+              採用ストーリーズ・投稿テンプレ制作
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-pink-500 flex-shrink-0"></i>
+              Indeedとのクロス導線設計
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-100">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-400">KPI：プロフィールアクセス / DM問合数</span>
+              <span class="text-xs font-bold text-pink-600 bg-pink-50 px-2 py-0.5 rounded">¥500,000〜</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品4: Indeed広告運用 -->
+      <div class="bg-white rounded-2xl border-2 border-emerald-100 p-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500 rounded-l-2xl"></div>
+        <div class="pl-2">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl gradient-upsell flex items-center justify-center">
+              <i data-lucide="trending-up" class="w-5 h-5 text-emerald-600"></i>
+            </div>
+            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">アップセル</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1 text-base leading-snug">Indeed<br>広告運用代行</h3>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            コボットで蓄積した不採用理由・採用傾向データをもとに、原稿改修・ターゲット設定・予算配分を最適化。他代理店が持っていないデータで運用する。
+          </p>
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              不採用理由データに基づく求人原稿改修
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              予算配分・入札の最適化
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              月次データレポート & 改善提案
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-400">
+            KPI：CPA / 有効応募数 / 採用決定数
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品5: Instagram広告運用 -->
+      <div class="bg-white rounded-2xl border-2 border-emerald-100 p-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500 rounded-l-2xl"></div>
+        <div class="pl-2">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl gradient-upsell flex items-center justify-center">
+              <i data-lucide="megaphone" class="w-5 h-5 text-emerald-600"></i>
+            </div>
+            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">クロスセル</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1 text-base leading-snug">Instagram<br>採用広告運用</h3>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            構築したInstagramアカウントに、特定エリア・年代へのターゲティング広告を配信。SNSで認知を取り、応募数を増やす。少額から開始可能。
+          </p>
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              エリア・年代ターゲティング設定
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              クリエイティブ制作・A/Bテスト
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              フォロワー獲得 → 応募誘導
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-400">
+            KPI：リーチ / プロフィール遷移率 / 応募転換率
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品6: RPO -->
+      <div class="bg-white rounded-2xl border-2 border-emerald-100 p-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500 rounded-l-2xl"></div>
+        <div class="pl-2">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl gradient-upsell flex items-center justify-center">
+              <i data-lucide="users" class="w-5 h-5 text-emerald-600"></i>
+            </div>
+            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">バックエンド</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-1 text-base leading-snug">RPO<br>（採用代行）</h3>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            蓄積したデータと採用ノウハウをベースに、採用活動全体を代行。母集団形成から選考サポート・入社後フォローまで、採用担当の手を解放する。
+          </p>
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              求人媒体の一元管理
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              応募者対応・面接調整の代行
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0"></i>
+              採用戦略の立案・PDCAサポート
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-400">
+            KPI：採用決定数 / 採用コスト / 定着率
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== SALES SCENARIOS ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="git-branch" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">02 — セールスシナリオ（商材の繋げ方）</h2>
+    </div>
+
+    <div class="space-y-6">
+
+      <!-- Scenario A -->
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="bg-indigo-600 px-6 py-4 flex items-start gap-3">
+          <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+            <span class="text-white font-black text-sm">A</span>
+          </div>
+          <div>
+            <div class="text-white font-bold text-base">「歩留まり・データ分断」に悩む企業向け</div>
+            <div class="text-indigo-200 text-xs mt-0.5">主要ターゲット：物流・介護・飲食チェーン（多店舗展開）</div>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-0 items-stretch">
+
+            <!-- Step 1 -->
+            <div class="flex-1 min-w-[160px]">
+              <div class="bg-indigo-50 rounded-xl p-4 h-full border border-indigo-100">
+                <div class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">STEP 1</div>
+                <div class="text-xs font-bold text-indigo-600 mb-1">リード獲得</div>
+                <div class="text-xs text-slate-600 leading-relaxed mb-3">LP・Web広告で無料「歩留まり診断」を獲得</div>
+                <div class="text-xs text-slate-400 bg-white rounded-lg px-2 py-1.5 border border-indigo-100">
+                  メッセージ：「Indeedの効果が落ちた？採否データを返していないからです」
+                </div>
+              </div>
+            </div>
+
+            <div class="scenario-arrow text-slate-300">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex-1 min-w-[160px]">
+              <div class="bg-indigo-50 rounded-xl p-4 h-full border border-indigo-100">
+                <div class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">STEP 2</div>
+                <div class="text-xs font-bold text-indigo-600 mb-1">フロント商材導入</div>
+                <div class="text-xs text-slate-600 leading-relaxed mb-3">コボット自動化 ＋ Disposition Sync連携を導入</div>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                  <span class="text-xs text-slate-500">リードタイム短縮を即実感させる</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="scenario-arrow text-slate-300">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex-1 min-w-[160px]">
+              <div class="bg-amber-50 rounded-xl p-4 h-full border border-amber-100">
+                <div class="text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">1〜2ヶ月後</div>
+                <div class="text-xs font-bold text-amber-700 mb-1">データ可視化</div>
+                <div class="text-xs text-slate-600 leading-relaxed mb-3">有効応募率・不採用理由が正確なデータとして蓄積</div>
+                <div class="text-xs text-slate-400 bg-white rounded-lg px-2 py-1.5 border border-amber-100">
+                  週次レポートで常に一緒にデータを見る関係を作る
+                </div>
+              </div>
+            </div>
+
+            <div class="scenario-arrow text-slate-300">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex-1 min-w-[160px]">
+              <div class="bg-emerald-50 rounded-xl p-4 h-full border border-emerald-100">
+                <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">アップセル</div>
+                <div class="text-xs font-bold text-emerald-700 mb-1">Indeed運用代行を受注</div>
+                <div class="text-xs text-slate-600 leading-relaxed mb-3">「不採用理由データから原稿にズレが判明。運用を任せれば改善できます」</div>
+                <div class="flex items-center gap-1.5">
+                  <i data-lucide="lock" class="w-3 h-3 text-emerald-500"></i>
+                  <span class="text-xs text-slate-500">他社に真似できないデータ運用</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario B -->
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="bg-pink-600 px-6 py-4 flex items-start gap-3">
+          <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+            <span class="text-white font-black text-sm">B</span>
+          </div>
+          <div>
+            <div class="text-white font-bold text-base">「若手集客・SNS運用疲れ」に悩む企業向け</div>
+            <div class="text-pink-200 text-xs mt-0.5">主要ターゲット：飲食・小売・サービス業（Z世代採用に困っている）</div>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-0 items-stretch">
+
+            <!-- Step 1 -->
+            <div class="flex-1 min-w-[160px]">
+              <div class="bg-pink-50 rounded-xl p-4 h-full border border-pink-100">
+                <div class="text-xs font-bold text-pink-400 uppercase tracking-widest mb-2">STEP 1</div>
+                <div class="text-xs font-bold text-pink-600 mb-1">リード獲得</div>
+                <div class="text-xs text-slate-600 leading-relaxed mb-3">ウェビナー・代理店DMでアプローチ</div>
+                <div class="text-xs text-slate-400 bg-white rounded-lg px-2 py-1.5 border border-pink-100">
+                  テーマ：「採用SNSは『更新しない』が正解。Z世代向けLP型Instagram構築法」
+                </div>
+              </div>
+            </div>
+
+            <div class="scenario-arrow text-slate-300">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex-1 min-w-[160px]">
+              <div class="bg-pink-50 rounded-xl p-4 h-full border border-pink-100">
+                <div class="text-xs font-bold text-pink-400 uppercase tracking-widest mb-2">STEP 2</div>
+                <div class="text-xs font-bold text-pink-600 mb-1">フロント商材導入</div>
+                <div class="text-xs text-slate-600 leading-relaxed mb-3">「更新しないSNS」を納品（¥500,000〜）</div>
+                <div class="flex items-center gap-1.5">
+                  <i data-lucide="alert-circle" class="w-3 h-3 text-amber-500"></i>
+                  <span class="text-xs text-slate-500">要注意：ワンショット切りに注意。月次レポートで接点を維持する</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="scenario-arrow text-slate-300">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex-1 min-w-[160px]">
+              <div class="bg-amber-50 rounded-xl p-4 h-full border border-amber-100">
+                <div class="text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">直後〜1ヶ月</div>
+                <div class="text-xs font-bold text-amber-700 mb-1">クロスセル</div>
+                <div class="text-xs text-slate-600 leading-relaxed mb-3">Instagram広告運用を開始し、ターゲットを呼び込む</div>
+                <div class="text-xs text-slate-400 bg-white rounded-lg px-2 py-1.5 border border-amber-100">
+                  「作ったアカウントに、少額から特定エリア20代を呼び込みませんか？」
+                </div>
+              </div>
+            </div>
+
+            <div class="scenario-arrow text-slate-300">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex-1 min-w-[160px]">
+              <div class="bg-emerald-50 rounded-xl p-4 h-full border border-emerald-100">
+                <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">3ヶ月後</div>
+                <div class="text-xs font-bold text-emerald-700 mb-1">Indeed/コボットへ展開</div>
+                <div class="text-xs text-slate-600 leading-relaxed mb-3">「SNSで認知は取れたが、面接の取りこぼしが発生。コボット×Indeed運用で完結しましょう」</div>
+                <div class="flex items-center gap-1.5">
+                  <i data-lucide="arrow-right-left" class="w-3 h-3 text-emerald-500"></i>
+                  <span class="text-xs text-slate-500">シナリオAへ合流</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== COMPETITIVE ADVANTAGE ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="shield-check" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">03 — 競合優位性：なぜ私たちが有利か</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-6">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="database" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">最大の強み</div>
+            <h3 class="font-bold text-slate-900 mb-2">「ツール」ではなく「データ」を握る</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">
+              フロント商材でコボットの入口を押さえることで、他代理店が持っていない精緻なデータ（歩留まり・不採用理由・SNS流入経路）を蓄積。このデータをもとにしたIndeed運用は他社に絶対に真似できない。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-6">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-xl bg-pink-600 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="door-open" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-pink-600 uppercase tracking-widest mb-1">商談の入りやすさ</div>
+            <h3 class="font-bold text-slate-900 mb-2">分かりやすい「ドアノック」商材</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">
+              「工数減＋効果増」という明確なメリットを初回商談で見せられる。「更新しないSNS」も「IndeedのAIを学習させる自動化（3.1倍エビデンス）」も、初回ハードルを大きく下げる。
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== KNOWN WEAKNESSES ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
+        <i data-lucide="triangle-alert" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">04 — 現在の課題・改善ポイント</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+      <div class="bg-white rounded-xl border border-amber-100 p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-2 h-2 rounded-full bg-red-500"></div>
+          <span class="text-xs font-bold text-red-600">優先度：高</span>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm mb-2">SNSワンショット問題</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">納品後に接点が途切れ、次の提案まで3ヶ月空く。その間に他代理店に取られるリスク。</p>
+        <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-emerald-600 font-semibold flex items-center gap-1.5">
+          <i data-lucide="lightbulb" class="w-3 h-3"></i>
+          月額2〜5万円の軽メンテ＋月次レポートで接点維持
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-amber-100 p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-2 h-2 rounded-full bg-red-500"></div>
+          <span class="text-xs font-bold text-red-600">優先度：高</span>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm mb-2">現場（店長）の反発リスク</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">SMS催促が「また来た」と嫌われると、現場がシステムを敵視して入力しなくなる。データが溜まらない→効果出ない→解約のループへ。</p>
+        <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-emerald-600 font-semibold flex items-center gap-1.5">
+          <i data-lucide="lightbulb" class="w-3 h-3"></i>
+          「入力するとIndeedが賢くなる」現場向け説明資料を標準納品物に含める
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-amber-100 p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+          <span class="text-xs font-bold text-amber-600">優先度：中</span>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm mb-2">アップセルまでの繋ぎが弱い</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">「1〜2ヶ月後にデータが溜まってから提案」では、その間にクライアントが他社と商談を始めるリスクがある。</p>
+        <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-emerald-600 font-semibold flex items-center gap-1.5">
+          <i data-lucide="lightbulb" class="w-3 h-3"></i>
+          導入初月から週次レポート→「データを一緒に見る習慣」を設計段階で入れる
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-amber-100 p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+          <span class="text-xs font-bold text-amber-600">優先度：中</span>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm mb-2">A/B両シナリオの複合提案がない</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">AとBが独立していて、両方の悩みを持つクライアントへの統合提案設計がない。</p>
+        <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-emerald-600 font-semibold flex items-center gap-1.5">
+          <i data-lucide="lightbulb" class="w-3 h-3"></i>
+          バンドルパッケージ提案書を作成する
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-amber-100 p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+          <span class="text-xs font-bold text-slate-500">優先度：低（将来）</span>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm mb-2">Indeed知識の差別化持続性</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">Disposition Syncの活用が業界に広まると他代理店がキャッチアップしてくる。今は「知っている代理店が少ない」ウィンドウ期間。</p>
+        <div class="mt-3 pt-3 border-t border-slate-100 text-xs text-emerald-600 font-semibold flex items-center gap-1.5">
+          <i data-lucide="lightbulb" class="w-3 h-3"></i>
+          差別化をIndeedの知識→「業界横断の不採用理由ベンチマークデータ」へ移行する
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== LTV MAP ========== -->
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">05 — 理想の収益設計イメージ</h2>
+    </div>
+
+    <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 text-white">
+      <div class="grid md:grid-cols-4 gap-0">
+
+        <div class="md:border-r border-white/10 pr-6">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">フロント（初月）</div>
+          <div class="space-y-3">
+            <div class="bg-indigo-600/30 border border-indigo-500/30 rounded-xl px-4 py-3">
+              <div class="text-xs text-indigo-300 mb-1">コボット自動化 ＋ Sync</div>
+              <div class="text-sm font-bold">初期費用 ＋ 月額</div>
+            </div>
+            <div class="bg-pink-600/30 border border-pink-500/30 rounded-xl px-4 py-3">
+              <div class="text-xs text-pink-300 mb-1">更新しないSNS</div>
+              <div class="text-sm font-bold">¥500,000〜 初回</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:border-r border-white/10 px-6 pt-6 md:pt-0">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">継続（翌月〜）</div>
+          <div class="space-y-3">
+            <div class="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+              <div class="text-xs text-slate-400 mb-1">SNS軽メンテ＋レポート</div>
+              <div class="text-sm font-bold">月¥20,000〜50,000</div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+              <div class="text-xs text-slate-400 mb-1">Instagram広告運用</div>
+              <div class="text-sm font-bold">月額運用手数料</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:border-r border-white/10 px-6 pt-6 md:pt-0">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">アップセル（2〜3ヶ月後）</div>
+          <div class="space-y-3">
+            <div class="bg-emerald-600/30 border border-emerald-500/30 rounded-xl px-4 py-3">
+              <div class="text-xs text-emerald-300 mb-1">Indeed広告運用代行</div>
+              <div class="text-sm font-bold">月額 ＋ 広告費%</div>
+            </div>
+            <div class="bg-emerald-600/30 border border-emerald-500/30 rounded-xl px-4 py-3">
+              <div class="text-xs text-emerald-300 mb-1">RPO（採用代行）</div>
+              <div class="text-sm font-bold">月額 ＋ 成果報酬</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pl-6 pt-6 md:pt-0">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">ロックイン</div>
+          <div class="bg-amber-600/30 border border-amber-500/30 rounded-xl px-4 py-4 h-full flex flex-col justify-center">
+            <div class="text-xs text-amber-300 mb-2">弊社だけが持つデータ</div>
+            <div class="text-sm font-bold mb-2">業界別 不採用理由 ベンチマーク</div>
+            <p class="text-xs text-slate-400 leading-relaxed">このデータがある限り、競合への乗り換えは困難になる</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <div class="text-center text-xs text-slate-400 pb-10">
+    社内向け資料 — 取り扱いにご注意ください
+  </div>
+
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+</body>
+</html>
