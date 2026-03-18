@@ -109,8 +109,16 @@
       background-color: #F8FAFC;
       background-image:
         radial-gradient(at 20% 30%, rgba(99,102,241,0.07) 0px, transparent 60%),
-        radial-gradient(at 80% 70%, rgba(79,70,229,0.05) 0px, transparent 50%);
+        radial-gradient(at 80% 70%, rgba(79,70,229,0.05) 0px, transparent 50%),
+        radial-gradient(circle, #C7D2FE 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
     }
+
+    /* FAQ accordion */
+    .faq-item summary { list-style: none; cursor: pointer; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item[open] .faq-icon { transform: rotate(45deg); }
+    .faq-icon { transition: transform 0.2s ease; }
 
     /* Table */
     .compare-table th { font-weight: 600; }
@@ -177,6 +185,7 @@
         <a href="#architecture" class="hover:text-indigo-600 transition-colors">仕組み</a>
         <a href="#comparison" class="hover:text-indigo-600 transition-colors">導入効果</a>
         <a href="#proof" class="hover:text-indigo-600 transition-colors">実績</a>
+        <a href="#pricing" class="hover:text-indigo-600 transition-colors">料金</a>
       </div>
       <a href="#cta" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors">無料診断</a>
     </nav>
@@ -192,7 +201,7 @@
     <div class="grid lg:grid-cols-2 gap-16 items-center">
 
       <!-- Left: Copy -->
-      <div class="pb-20">
+      <div>
         <div class="badge bg-indigo-50 text-indigo-600 border border-indigo-100 mb-6">
           <span data-lucide="zap" class="w-3 h-3"></span>
           採用支援パッケージ &nbsp;|&nbsp; 面接コボット自動化 × Indeed Disposition Sync
@@ -401,6 +410,36 @@
         </svg>
       </div>
 
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     1.5 LOGO BAR
+================================================ -->
+<section class="bg-white border-b border-slate-100 py-8">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">現在 <span class="text-indigo-600 font-bold">12社以上</span> が導入・試験運用中</p>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-indigo-400"></div>物流・配送業
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-emerald-400"></div>飲食・フード
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-amber-400"></div>小売・EC
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-rose-400"></div>介護・医療
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-violet-400"></div>製造・工場
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-cyan-400"></div>人材・派遣
+      </div>
     </div>
   </div>
 </section>
@@ -1170,7 +1209,182 @@
 
 
 <!-- ================================================
-     7. CLOSING CTA
+     7. PRICING
+================================================ -->
+<section class="py-24 bg-slate-50" id="pricing">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="badge bg-indigo-50 text-indigo-600 border border-indigo-100 mb-4">
+        <span data-lucide="package" class="w-3 h-3"></span>
+        PRICING
+      </div>
+      <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-4">
+        シンプルな2プラン構成
+      </h2>
+      <p class="text-slate-500 max-w-md mx-auto text-sm">解約違約金なし。まずは最低3ヶ月で効果を確かめてください。</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 items-start">
+
+      <!-- Plan 1: Standard -->
+      <div class="reveal bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+        <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">STANDARD</div>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">面接コボット基本プラン</h3>
+        <p class="text-sm text-slate-500 mb-6">応募対応の自動化とステータス管理</p>
+        <div class="flex items-baseline gap-1 mb-8">
+          <span class="text-4xl font-black text-slate-900">¥50,000</span>
+          <span class="text-slate-500 text-sm">/月</span>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-slate-600">
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            3時間未対応→SMS自動発火
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            面接ステータス自動回収（催促リマインド）
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            不採用理由の収集・体系化
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            月次改善レポート
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            SMSシナリオ設計サポート（初回）
+          </li>
+        </ul>
+        <a href="#cta" class="block text-center px-6 py-3 border-2 border-indigo-600 text-indigo-600 rounded-xl font-semibold text-sm hover:bg-indigo-50 transition-colors">
+          まず相談する
+        </a>
+      </div>
+
+      <!-- Plan 2: Growth (Recommended) -->
+      <div class="reveal bg-indigo-600 rounded-2xl p-8 border border-indigo-500 shadow-lg shadow-indigo-200 relative overflow-hidden" style="transition-delay:0.1s">
+        <!-- Popular badge -->
+        <div class="absolute top-5 right-5 bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">おすすめ</div>
+        <div class="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-3">GROWTH</div>
+        <h3 class="text-xl font-bold text-white mb-2">コボット + Disposition Sync</h3>
+        <p class="text-sm text-indigo-200 mb-6">Indeed AIを活用した採用最適化まで</p>
+        <div class="flex items-baseline gap-1 mb-8">
+          <span class="text-4xl font-black text-white">¥70,000</span>
+          <span class="text-indigo-200 text-sm">/月</span>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-indigo-100">
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            STANDARDの全機能
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            Indeed Disposition Sync連携設定（代行）
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            採否データのIndeed送信管理
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            有効応募率・CPA改善レポート
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            月次改善PDCA伴走サポート
+          </li>
+        </ul>
+        <a href="#cta" class="block text-center px-6 py-3 bg-white text-indigo-600 rounded-xl font-bold text-sm hover:bg-indigo-50 transition-colors">
+          無料診断を申し込む
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Options note -->
+    <div class="reveal mt-8 bg-white rounded-xl p-5 border border-slate-200 text-sm text-slate-500 text-center">
+      <span class="font-semibold text-slate-700">オプション追加可能：</span>
+      Indeed / Instagram広告運用代行（広告費×20%）&nbsp;|&nbsp;
+      RPO採用代行（¥150,000+/月）&nbsp;|&nbsp;
+      採用HP制作（¥1,000,000〜）
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     8. FAQ
+================================================ -->
+<section class="py-24 bg-white" id="faq">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-12 reveal">
+      <div class="badge bg-slate-100 text-slate-600 border border-slate-200 mb-4">
+        <span data-lucide="help-circle" class="w-3 h-3"></span>
+        FAQ
+      </div>
+      <h2 class="text-3xl font-black tracking-tight text-slate-900">よくある質問</h2>
+    </div>
+
+    <div class="space-y-3 reveal">
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">既存の採用管理システムとの連携はできますか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          AirWork、Engage、ジョブオプ等の主要ATSとの連携実績があります。現在お使いのシステムを事前にお知らせいただければ、接続可否を確認いたします。
+        </div>
+      </details>
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">現場（店長・支店長）にアプリや登録は必要ですか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          不要です。現場担当者へはSMSで通知が届き、スマートフォンのブラウザから1タップで面接枠確保・ステータス入力が完結します。アプリインストールや会員登録は一切不要なため、現場への展開が簡単です。
+        </div>
+      </details>
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">導入までどれくらいの期間がかかりますか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          最短2週間で稼働開始できます。初回のヒアリング〜SMSシナリオ設計〜テスト送信〜本番稼働までを弊社が一貫して対応します。
+        </div>
+      </details>
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">Indeed Disposition Syncとはどんな機能ですか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          採用・不採用などの選考結果（Disposition）をIndeedのAIに送信（Sync）する機能です。データを受け取ったIndeedのAIは「この企業がどんな人材を求めているか」を学習し、次回以降の求人表示精度を高めます。結果として有効応募率の向上・採用単価（CPA）の削減につながります。
+        </div>
+      </details>
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">効果が出なかった場合、途中解約できますか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          最低契約期間3ヶ月以降は、1ヶ月前通知でいつでも解約できます。解約違約金はありません。ただし、Indeed AIの学習には一定のデータ蓄積が必要なため、3〜6ヶ月での継続をおすすめしています。
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     9. CLOSING CTA
 ================================================ -->
 <section class="py-28 bg-slate-900" id="cta">
   <div class="max-w-3xl mx-auto px-6 text-center">
@@ -1220,7 +1434,7 @@
 <!-- FOOTER -->
 <footer class="bg-slate-950 py-10 text-center text-slate-600 text-xs">
   <div class="max-w-6xl mx-auto px-6">
-    <p class="mb-2">© 2025 面接コボット自動化 × Indeed連携パッケージ　採用エコシステム構築支援</p>
+    <p class="mb-2">© 2026 面接コボット自動化 × Indeed連携パッケージ　採用エコシステム構築支援</p>
     <p>※ 記載の数値はIndeed社公式データおよび実導入事例に基づきます。効果は企業によって異なります。</p>
   </div>
 </footer>
@@ -1241,7 +1455,7 @@
   new Chart(barCtx, {
     type: 'bar',
     data: {
-      labels: ['応募数', '有効応募率（自動アプローチ経由）', '採用パフォーマンス'],
+      labels: ['応募数', '有効応募率', '採用パフォーマンス'],
       datasets: [
         {
           label: '未連携',
