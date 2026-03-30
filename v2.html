@@ -160,7 +160,7 @@
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="#" class="flex items-center">
       <img
-        src="C:/Users/naoto/OneDrive/デスクトップ/logo/PNG/recogram_logo_01.png"
+        src="./images/recogram_logo.png"
         alt="recogram"
         class="h-8 w-auto object-contain"
         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
@@ -174,12 +174,6 @@
       </div>
     </a>
     <nav class="flex items-center gap-2">
-      <!-- ページ切り替えタブ -->
-      <div class="hidden md:flex items-center gap-1 bg-slate-100 rounded-lg p-1 mr-4">
-        <span class="px-3 py-1.5 bg-white text-indigo-600 rounded-md text-xs font-bold shadow-sm">サービスLP</span>
-        <a href="products.html" class="px-3 py-1.5 text-slate-500 hover:text-slate-800 rounded-md text-xs font-semibold transition-colors">商品構成</a>
-        <a href="revenue.html" class="px-3 py-1.5 text-slate-500 hover:text-slate-800 rounded-md text-xs font-semibold transition-colors">収益モデル</a>
-      </div>
       <!-- ページ内リンク -->
       <div class="hidden md:flex items-center gap-6 text-sm text-slate-600 mr-4">
         <a href="#architecture" class="hover:text-indigo-600 transition-colors">仕組み</a>
@@ -1402,15 +1396,17 @@
       まずは貴社の「歩留まりの詰まり」と「改善余地」を無料で診断します。
     </p>
 
-    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-      <a href="#" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-900/50">
-        <span data-lucide="clipboard-check" class="w-5 h-5"></span>
-        無料診断ページへ
-      </a>
-      <a href="#" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-semibold rounded-xl border border-white/20 hover:bg-white/20 transition-all">
-        <span data-lucide="download" class="w-5 h-5"></span>
-        サービス資料をダウンロード
-      </a>
+    <!-- HubSpot フォーム埋め込み -->
+    <div class="bg-white rounded-2xl p-8 text-left max-w-xl mx-auto mb-12">
+      <script charset="utf-8" type="text/javascript"
+        src="//js.hsforms.net/forms/embed/v2.js"></script>
+      <script>
+        hbspt.forms.create({
+          region: "YOUR_REGION",       // 例: "na1" or "eu1"
+          portalId: "YOUR_PORTAL_ID",  // HubSpot ポータルID
+          formId: "YOUR_FORM_ID"       // HubSpot フォームID
+        });
+      </script>
     </div>
 
     <div class="flex flex-wrap justify-center gap-6 text-sm text-slate-500">

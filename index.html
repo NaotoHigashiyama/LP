@@ -3,1188 +3,936 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>面接コボット自動化 × Indeed連携パッケージ | 採用エコシステム構築支援</title>
+  <title>面接コボット × Indeed連携パッケージ | 採用自動化</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans JP"', 'Inter', 'ui-sans-serif', 'system-ui'],
+          },
+          colors: {
+            indigo: {
+              50:  '#EEF2FF',
+              100: '#E0E7FF',
+              200: '#C7D2FE',
+              400: '#818CF8',
+              500: '#6366F1',
+              600: '#4F46E5',
+              700: '#4338CA',
+              800: '#3730A3',
+              900: '#312E81',
+            }
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'flow': 'flowAnim 2.5s linear infinite',
+            'flow2': 'flowAnim 2.5s linear infinite 0.8s',
+            'flow3': 'flowAnim 2.5s linear infinite 1.6s',
+          },
+          keyframes: {
+            flowAnim: {
+              '0%':   { 'stroke-dashoffset': '200' },
+              '100%': { 'stroke-dashoffset': '0' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    /* ===== RESET & BASE ===== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --navy:   #0A1628;
-      --navy2:  #112244;
-      --blue:   #1565C0;
-      --blue2:  #1E88E5;
-      --cyan:   #00B4D8;
-      --orange: #FF6F00;
-      --amber:  #FFB300;
-      --green:  #2E7D32;
-      --green2: #43A047;
-      --red:    #C62828;
-      --white:  #FFFFFF;
-      --gray1:  #F5F7FA;
-      --gray2:  #E8ECF0;
-      --gray3:  #9AA3B0;
-      --text:   #1A202C;
-      --radius: 12px;
-      --shadow: 0 4px 24px rgba(0,0,0,.12);
-      --shadow-lg: 0 12px 48px rgba(0,0,0,.20);
-    }
+    /* Base */
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Noto Sans JP', sans-serif;
-      color: var(--text);
-      background: var(--white);
-      line-height: 1.75;
-      -webkit-font-smoothing: antialiased;
+    body { -webkit-font-smoothing: antialiased; }
+    /* ハッシュナビゲーション時にスティッキーヘッダー分オフセット */
+    section[id] { scroll-margin-top: 72px; }
+
+    /* Flow line animation */
+    .flow-line {
+      stroke-dasharray: 8 6;
+      stroke-dashoffset: 200;
+      animation: flowAnim 2.4s linear infinite;
+    }
+    .flow-line-2 { animation-delay: 0.8s; }
+    .flow-line-3 { animation-delay: 1.6s; }
+    @keyframes flowAnim {
+      to { stroke-dashoffset: 0; }
     }
 
-    /* ===== UTILITY ===== */
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-    .section { padding: 96px 0; }
-    .section-tag {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      padding: 4px 14px;
-      border-radius: 99px;
-      margin-bottom: 16px;
+    /* Pulse ring */
+    .pulse-ring {
+      animation: pulseRing 2s ease-out infinite;
     }
-    .section-title {
-      font-family: 'Noto Serif JP', serif;
-      font-size: clamp(26px, 3.5vw, 40px);
-      font-weight: 700;
-      line-height: 1.4;
-      margin-bottom: 16px;
-    }
-    .section-lead {
-      font-size: 16px;
-      color: #4A5568;
-      max-width: 720px;
-      margin-bottom: 56px;
-      line-height: 1.9;
-    }
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 5px 14px;
-      border-radius: 99px;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 15px;
-      font-weight: 700;
-      padding: 18px 36px;
-      border-radius: 8px;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: all .2s;
-      line-height: 1.3;
-      text-align: center;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--orange), #FF8F00);
-      color: white;
-      box-shadow: 0 4px 20px rgba(255,111,0,.4);
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,111,0,.5); }
-    .btn-outline {
-      background: transparent;
-      color: white;
-      border: 2px solid rgba(255,255,255,.6);
-    }
-    .btn-outline:hover { background: rgba(255,255,255,.1); border-color: white; }
-    .btn-blue {
-      background: var(--blue);
-      color: white;
-      box-shadow: 0 4px 16px rgba(21,101,192,.35);
-    }
-    .btn-blue:hover { background: var(--blue2); transform: translateY(-2px); }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-    @media (max-width: 768px) {
-      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-      .section { padding: 64px 0; }
+    @keyframes pulseRing {
+      0%   { transform: scale(1);   opacity: 0.6; }
+      100% { transform: scale(1.8); opacity: 0; }
     }
 
-    /* ===== HEADER NAV ===== */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10,22,40,.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      padding: 14px 0;
+    /* Dot traveling along path */
+    .dot-travel {
+      animation: dotTravel 2.4s linear infinite;
     }
-    .header-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .dot-travel-2 { animation-delay: 0.8s; }
+    .dot-travel-3 { animation-delay: 1.6s; }
+    @keyframes dotTravel {
+      0%   { opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { opacity: 0; }
     }
-    .logo {
-      font-size: 15px;
-      font-weight: 700;
-      color: white;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }
-    .header-cta { font-size: 13px; }
 
-    /* ===== 1. HERO / FV ===== */
-    .hero {
-      background: linear-gradient(165deg, var(--navy) 0%, #0D2356 50%, #1A1060 100%);
-      padding: 100px 0 0;
-      overflow: hidden;
+    /* Step connector */
+    .step-connector {
       position: relative;
     }
-    .hero::before {
+    .step-connector::after {
       content: '';
       position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 80% 30%, rgba(0,180,216,.12) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(255,111,0,.08) 0%, transparent 70%);
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0,180,216,.15);
-      border: 1px solid rgba(0,180,216,.3);
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      padding: 6px 16px;
-      border-radius: 99px;
-      margin-bottom: 28px;
-    }
-    .hero-title {
-      font-family: 'Noto Serif JP', serif;
-      font-size: clamp(28px, 4.5vw, 54px);
-      font-weight: 700;
-      color: white;
-      line-height: 1.35;
-      margin-bottom: 28px;
-    }
-    .hero-title em {
-      font-style: normal;
-      background: linear-gradient(90deg, var(--cyan), #60EFFF);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-title strong {
-      font-style: normal;
-      background: linear-gradient(90deg, var(--amber), var(--orange));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-sub {
-      font-size: clamp(14px, 1.8vw, 17px);
-      color: rgba(255,255,255,.75);
-      max-width: 680px;
-      line-height: 1.9;
-      margin-bottom: 48px;
-    }
-    .hero-cta-group {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 56px;
-    }
-    .badge-strip {
-      background: linear-gradient(90deg, rgba(255,111,0,.18), rgba(255,179,0,.12));
-      border: 1px solid rgba(255,179,0,.3);
-      border-radius: var(--radius);
-      padding: 20px 28px;
-      margin-bottom: -1px;
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .badge-item {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .badge-label {
-      font-size: 11px;
-      color: rgba(255,255,255,.55);
-      letter-spacing: .05em;
-    }
-    .badge-value {
-      font-size: clamp(18px, 2.5vw, 26px);
-      font-weight: 900;
-      background: linear-gradient(90deg, var(--amber), #FFD54F);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
-    }
-    .badge-value span { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.7); -webkit-text-fill-color: rgba(255,255,255,.7); }
-
-    /* ===== 2. PAIN POINTS ===== */
-    .pain { background: var(--gray1); }
-    .pain-tag { background: rgba(198,40,40,.1); color: var(--red); }
-    .pain-cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-bottom: 48px;
-    }
-    @media (max-width: 768px) { .pain-cards { grid-template-columns: 1fr; } }
-    .pain-card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 24px;
-      border-left: 4px solid var(--red);
-      box-shadow: var(--shadow);
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    .pain-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      background: rgba(198,40,40,.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-    .pain-text { font-size: 14px; line-height: 1.8; color: #2D3748; }
-    .pain-text strong { color: var(--red); }
-    .pain-conclusion {
-      background: var(--navy);
-      color: white;
-      border-radius: var(--radius);
-      padding: 28px 32px;
-      font-size: 16px;
-      line-height: 1.8;
-      position: relative;
-      overflow: hidden;
-    }
-    .pain-conclusion::before {
-      content: '⇒';
-      position: absolute;
-      right: 24px;
+      right: -20px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 64px;
-      color: rgba(255,255,255,.05);
-    }
-    .pain-conclusion strong { color: var(--amber); }
-
-    /* ===== 3. CONCEPT ===== */
-    .concept { background: white; }
-    .concept-tag { background: rgba(21,101,192,.1); color: var(--blue); }
-    .concept-box {
-      background: linear-gradient(135deg, var(--navy), #0D2356);
-      border-radius: 20px;
-      padding: 56px 48px;
-      color: white;
-      position: relative;
-      overflow: hidden;
-    }
-    .concept-box::after {
-      content: '';
-      position: absolute;
-      bottom: -40px;
-      right: -40px;
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: rgba(0,180,216,.08);
-    }
-    .concept-headline {
-      font-family: 'Noto Serif JP', serif;
-      font-size: clamp(20px, 3vw, 32px);
-      font-weight: 700;
-      margin-bottom: 24px;
-      line-height: 1.4;
-    }
-    .concept-headline em {
-      font-style: normal;
-      color: var(--cyan);
-    }
-    .concept-body {
-      font-size: 15px;
-      color: rgba(255,255,255,.8);
-      line-height: 2;
-      max-width: 680px;
-      position: relative;
-      z-index: 1;
-    }
-    .concept-body strong { color: var(--amber); }
-
-    /* ===== 4. FLOW DIAGRAM ===== */
-    .flow-section { background: var(--navy); overflow: hidden; }
-    .flow-tag { background: rgba(0,180,216,.15); color: var(--cyan); }
-    .flow-title { color: white; }
-    .flow-lead { color: rgba(255,255,255,.65); }
-    .flow-compare {
-      display: grid;
-      grid-template-columns: 1fr 80px 1fr;
-      gap: 0;
-      align-items: start;
-      margin-bottom: 48px;
-    }
-    @media (max-width: 768px) {
-      .flow-compare { grid-template-columns: 1fr; }
-      .flow-vs { display: none; }
-    }
-    .flow-col {
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-    .flow-col-header {
-      padding: 18px 24px;
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: .05em;
-      text-align: center;
-    }
-    .flow-col-before .flow-col-header { background: #546E7A; color: white; }
-    .flow-col-after .flow-col-header {
-      background: linear-gradient(90deg, var(--blue), var(--blue2));
-      color: white;
-    }
-    .flow-col-body { padding: 0; }
-    .flow-step {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      padding: 16px 20px;
-      border-bottom: 1px solid;
-    }
-    .flow-col-before .flow-step {
-      background: #ECEFF1;
-      border-bottom-color: #CFD8DC;
-    }
-    .flow-col-after .flow-step {
-      background: #E3F2FD;
-      border-bottom-color: #BBDEFB;
-    }
-    .flow-step:last-child { border-bottom: none; }
-    .flow-step-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    .flow-col-before .flow-step-icon { background: #90A4AE; }
-    .flow-col-after .flow-step-icon { background: var(--blue); }
-    .flow-step-text { font-size: 13px; line-height: 1.7; color: #2D3748; }
-    .flow-step-text strong { color: var(--blue); }
-    .flow-auto-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 10px;
-      border-radius: 99px;
-      background: var(--orange);
-      color: white;
-      margin-top: 4px;
-    }
-    .flow-step-auto {
-      background: linear-gradient(135deg, #E3F2FD, #E8F5E9) !important;
-      border-left: 3px solid var(--orange) !important;
-    }
-    .flow-vs {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--amber);
-      padding-top: 56px;
-    }
-    .flow-loop-banner {
-      background: linear-gradient(135deg, var(--green), #388E3C, #2E7D32);
-      border-radius: 16px;
-      padding: 32px 40px;
-      color: white;
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-    .loop-icon { font-size: 48px; }
-    .loop-content { flex: 1; min-width: 280px; }
-    .loop-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .loop-desc { font-size: 13px; color: rgba(255,255,255,.85); line-height: 1.8; }
-    .loop-steps {
-      display: flex;
-      gap: 0;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .loop-step-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      background: rgba(255,255,255,.15);
-      padding: 8px 16px;
-      border-radius: 8px;
-      white-space: nowrap;
-    }
-    .loop-arrow { color: var(--amber); font-size: 18px; margin: 0 4px; }
-
-    /* Mermaid diagram */
-    .mermaid-wrap {
-      background: white;
-      border-radius: 16px;
-      padding: 32px 24px;
-      overflow-x: auto;
-      margin-bottom: 40px;
-    }
-    .mermaid-wrap .mermaid {
-      min-width: 600px;
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, #C7D2FE, #4F46E5);
     }
 
-    /* ===== 5. FEATURES ===== */
-    .features { background: var(--gray1); }
-    .features-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
+    /* Gradient mesh bg */
+    .mesh-bg {
+      background-color: #F8FAFC;
+      background-image:
+        radial-gradient(at 20% 30%, rgba(99,102,241,0.07) 0px, transparent 60%),
+        radial-gradient(at 80% 70%, rgba(79,70,229,0.05) 0px, transparent 50%),
+        radial-gradient(circle, #C7D2FE 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
     }
-    @media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } }
-    .feature-col {
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
+
+    /* FAQ accordion */
+    .faq-item summary { list-style: none; cursor: pointer; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item[open] .faq-icon { transform: rotate(45deg); }
+    .faq-icon { transition: transform 0.2s ease; }
+
+    /* Table */
+    .compare-table th { font-weight: 600; }
+    .compare-table td, .compare-table th { padding: 14px 20px; }
+    .compare-table tbody tr:nth-child(even) { background: #F8FAFC; }
+
+    /* Fade in on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
     }
-    .feature-col-header {
-      padding: 28px 32px;
-      color: white;
-      position: relative;
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
-    .feature-col-header.defense {
-      background: linear-gradient(135deg, #1565C0, #1976D2);
-    }
-    .feature-col-header.offense {
-      background: linear-gradient(135deg, #2E7D32, #43A047);
-    }
-    .feature-label {
+
+    /* Badge */
+    .badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      background: rgba(255,255,255,.2);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       padding: 4px 12px;
-      border-radius: 99px;
-      margin-bottom: 12px;
+      border-radius: 9999px;
     }
-    .feature-col-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-    .feature-col-sub { font-size: 13px; color: rgba(255,255,255,.8); }
-    .feature-items { padding: 24px 32px; }
-    .feature-item {
-      display: flex;
-      gap: 16px;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--gray2);
-    }
-    .feature-item:last-child { border-bottom: none; }
-    .feature-num {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      color: white;
-      flex-shrink: 0;
-    }
-    .defense .feature-num { background: var(--blue); }
-    .offense .feature-num { background: var(--green); }
-    .feature-num-wrap { flex-shrink: 0; }
-    .feature-item-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-    .feature-item-desc { font-size: 13px; color: #4A5568; line-height: 1.8; }
-
-    /* ===== 6. EVIDENCE ===== */
-    .evidence { background: white; }
-    .evidence-tag { background: rgba(255,111,0,.1); color: var(--orange); }
-    .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-    @media (max-width: 768px) { .evidence-grid { grid-template-columns: 1fr; } }
-    .evidence-card {
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .evidence-card-header {
-      padding: 20px 28px;
-      color: white;
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .evidence-card.indeed .evidence-card-header {
-      background: linear-gradient(90deg, #003580, #0052CC);
-    }
-    .evidence-card.case .evidence-card-header {
-      background: linear-gradient(90deg, var(--blue), var(--blue2));
-    }
-    .evidence-card-body { padding: 28px; background: var(--gray1); }
-    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
-    .stat-item { text-align: center; }
-    .stat-num {
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight: 900;
-      line-height: 1.1;
-      display: block;
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .stat-num.orange {
-      background: linear-gradient(135deg, var(--orange), var(--amber));
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-    .stat-label { font-size: 11px; color: #4A5568; line-height: 1.5; margin-top: 4px; }
-    .case-row {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-    .case-tag-before {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 10px;
-      border-radius: 4px;
-      background: #ECEFF1;
-      color: #546E7A;
-      white-space: nowrap;
-    }
-    .case-tag-after {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 10px;
-      border-radius: 4px;
-      background: rgba(21,101,192,.1);
-      color: var(--blue);
-      white-space: nowrap;
-    }
-    .case-desc { font-size: 13px; color: #2D3748; line-height: 1.8; }
-
-    /* ===== 7. WHY US ===== */
-    .why { background: var(--gray1); }
-    .why-tag { background: rgba(46,125,50,.1); color: var(--green); }
-    .why-box {
-      background: white;
-      border-radius: 20px;
-      padding: 48px;
-      box-shadow: var(--shadow);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: center;
-    }
-    @media (max-width: 768px) { .why-box { grid-template-columns: 1fr; padding: 32px 24px; } }
-    .why-text { font-size: 15px; color: #2D3748; line-height: 2; }
-    .why-text strong { color: var(--blue); }
-    .why-list { display: flex; flex-direction: column; gap: 16px; }
-    .why-item {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      padding: 16px;
-      background: var(--gray1);
-      border-radius: 10px;
-    }
-    .why-item-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: var(--blue);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    .why-item-text { font-size: 13px; line-height: 1.8; color: #2D3748; }
-    .why-item-text strong { color: var(--text); font-size: 14px; display: block; margin-bottom: 2px; }
-
-    /* ===== 8. FLOW STEPS ===== */
-    .steps { background: white; }
-    .steps-tag { background: rgba(21,101,192,.1); color: var(--blue); }
-    .steps-list { counter-reset: step; display: flex; flex-direction: column; gap: 0; }
-    .step-item {
-      display: flex;
-      gap: 0;
-      position: relative;
-    }
-    .step-item:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      left: 28px;
-      top: 64px;
-      bottom: 0;
-      width: 2px;
-      background: linear-gradient(var(--blue2), var(--gray2));
-    }
-    .step-number {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--blue), var(--blue2));
-      color: white;
-      font-size: 20px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(21,101,192,.35);
-      z-index: 1;
-    }
-    .step-content { padding: 12px 0 40px 28px; }
-    .step-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-    .step-desc { font-size: 14px; color: #4A5568; line-height: 1.9; }
-    .step-desc strong { color: var(--blue); }
-
-    /* ===== 9. FINAL CTA ===== */
-    .final-cta {
-      background: linear-gradient(165deg, var(--navy), #0D2356, #1A1060);
-      padding: 96px 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .final-cta::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,180,216,.15), transparent 60%),
-        radial-gradient(ellipse 40% 40% at 80% 100%, rgba(255,111,0,.08), transparent 60%);
-    }
-    .final-cta .container { position: relative; z-index: 1; }
-    .final-cta-title {
-      font-family: 'Noto Serif JP', serif;
-      font-size: clamp(22px, 3.5vw, 40px);
-      font-weight: 700;
-      color: white;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-    .final-cta-title em {
-      font-style: normal;
-      color: var(--amber);
-    }
-    .final-cta-sub {
-      font-size: 15px;
-      color: rgba(255,255,255,.72);
-      line-height: 1.9;
-      max-width: 640px;
-      margin: 0 auto 48px;
-    }
-    .final-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-    /* ===== FOOTER ===== */
-    footer {
-      background: #060E1A;
-      padding: 32px 0;
-      text-align: center;
-      color: rgba(255,255,255,.35);
-      font-size: 12px;
-    }
-
-    /* ===== ANIMATIONS ===== */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up {
-      opacity: 0;
-      animation: fadeUp .7s ease forwards;
-    }
-    .fade-up.d1 { animation-delay: .1s; }
-    .fade-up.d2 { animation-delay: .2s; }
-    .fade-up.d3 { animation-delay: .3s; }
-    .fade-up.d4 { animation-delay: .4s; }
-
-    /* ===== NOTICE RIBBON ===== */
-    .ribbon {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      background: var(--amber);
-      color: var(--navy);
-      padding: 3px 12px;
-      border-radius: 4px;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-
-    /* ===== DIVIDER ===== */
-    .divider {
-      width: 48px;
-      height: 4px;
-      border-radius: 2px;
-      background: linear-gradient(90deg, var(--blue), var(--cyan));
-      margin: 20px 0 32px;
-    }
-    .divider.green { background: linear-gradient(90deg, var(--green), #66BB6A); }
-    .divider.orange { background: linear-gradient(90deg, var(--orange), var(--amber)); }
   </style>
 </head>
-<body>
 
-<!-- ===== HEADER ===== -->
-<header class="header">
-  <div class="header-inner">
-    <a href="#" class="logo">
-      <div class="logo-icon">&#x1F916;</div>
-      面接コボット × Indeed連携
+<body class="bg-slate-50 text-slate-900 font-sans">
+
+<!-- ================================================
+     HEADER
+================================================ -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#" class="flex items-center">
+      <img
+        src="./images/recogram_logo.png"
+        alt="recogram"
+        class="h-8 w-auto object-contain"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <!-- ロゴ読み込み失敗時のフォールバック -->
+      <div class="hidden items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 12h3M18 12h3M12 3v3M12 18v3"/><path d="M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
+        </div>
+        <span class="font-bold text-slate-900 text-sm tracking-tight">面接コボット × Indeed 連携</span>
+      </div>
     </a>
-    <a href="#cta" class="btn btn-primary" style="padding:12px 24px;font-size:13px;">
-      無料診断を申し込む
-    </a>
+    <nav class="flex items-center gap-2">
+      <!-- ページ内リンク -->
+      <div class="hidden md:flex items-center gap-6 text-sm text-slate-600 mr-4">
+        <a href="#architecture" class="hover:text-indigo-600 transition-colors">仕組み</a>
+        <a href="#comparison" class="hover:text-indigo-600 transition-colors">導入効果</a>
+        <a href="#proof" class="hover:text-indigo-600 transition-colors">実績</a>
+        <a href="#pricing" class="hover:text-indigo-600 transition-colors">料金</a>
+      </div>
+      <a href="#cta" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors">無料診断</a>
+    </nav>
   </div>
 </header>
 
-<!-- ===== 1. HERO ===== -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow fade-up">
-      &#x1F4E1;&nbsp; 採用支援パッケージ &nbsp;|&nbsp; 面接コボット自動化 &times; Indeed Disposition Sync
-    </div>
-    <h1 class="hero-title fade-up d1">
-      現場の「対応遅れ」をゼロにし、<br>
-      Indeedの「<em>集客力</em>」を最大化する。<br>
-      <strong>採用を自ら学習する</strong>、次世代エコシステム。
-    </h1>
-    <p class="hero-sub fade-up d2">
-      面接コボットのデータを「動かすデータ」に変えませんか？<br>
-      現場へのSMS自動催促で面接設定のリードタイムを極限まで短縮。<br>
-      さらに、正確な「採否データ」をIndeedに共有することで、AIが自社のターゲットを自動学習し、<br>
-      欲しい人材だけをピンポイントで集め続けます。
-    </p>
-    <div class="hero-cta-group fade-up d3">
-      <a href="#cta" class="btn btn-primary">&#x1F4CB;&nbsp; 無料で「歩留まり・集客」を診断する</a>
-      <a href="#cta" class="btn btn-outline">&#x1F4C4;&nbsp; サービス資料をダウンロード</a>
-    </div>
-    <div class="badge-strip fade-up d4">
-      <div class="badge-item">
-        <span class="badge-label">面接確定リードタイム</span>
-        <span class="badge-value">31h &rarr; <span>最短</span>2h<span> に短縮！</span></span>
-      </div>
-      <div class="badge-item">
-        <span class="badge-label">採否データ共有による</span>
-        <span class="badge-value">有効応募率 <span>最大</span>3.1倍<span>！</span></span>
-      </div>
-      <div class="badge-item">
-        <span class="badge-label">採否データ共有による</span>
-        <span class="badge-value">応募数 <span>最大</span>2.1倍<span>！</span></span>
-      </div>
-      <div class="badge-item">
-        <span class="badge-label">採用パフォーマンス</span>
-        <span class="badge-value">+30%<span> 改善</span></span>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ===== 2. PAIN POINTS ===== -->
-<section class="section pain">
-  <div class="container">
-    <span class="section-tag pain-tag">&#x26A0;&#xFE0F; PROBLEM</span>
-    <h2 class="section-title">こんな「負のループ」に<br>陥っていませんか？</h2>
-    <div class="divider orange"></div>
-    <div class="pain-cards">
-      <div class="pain-card">
-        <div class="pain-icon">&#x231B;</div>
-        <p class="pain-text">現場が忙しく、面接日程の調整が後回しにされ、<strong>他社に人材を奪われている。</strong></p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">&#x2753;</div>
-        <p class="pain-text">面接が終わってもコボットのステータスが更新されず、<strong>誰が受かって誰が落ちたのか分からない。</strong></p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">&#x1F5D1;</div>
-        <p class="pain-text">「とりあえず応募」が多く、ターゲット外の応募者ばかりで<strong>面接工数と広告費が無駄になっている。</strong></p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">&#x1F4C9;</div>
-        <p class="pain-text">不採用の理由が曖昧で、<strong>次回の求人原稿の改善に活かせていない。</strong></p>
-      </div>
-    </div>
-    <div class="pain-conclusion">
-      <p>&#x21D2; この原因は、<strong>「現場の入力漏れ」と「媒体とデータの分断」</strong>にあります。<br>
-      担当者が動かないことと、データが眠っていることが、採用コストを押し上げ続けている原因です。</p>
-    </div>
-  </div>
-</section>
+<!-- ================================================
+     1. HERO
+================================================ -->
+<section class="mesh-bg pt-20 pb-16 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
 
-<!-- ===== 3. CONCEPT ===== -->
-<section class="section concept">
-  <div class="container">
-    <span class="section-tag concept-tag">&#x1F4A1; CONCEPT</span>
-    <h2 class="section-title">なぜ、この2つをセットで解決するのか</h2>
-    <div class="divider"></div>
-    <div class="concept-box">
-      <h3 class="concept-headline">
-        「<em>人が忘れる前に自動で動く</em>」&nbsp;＋&nbsp;<br>
-        「<em>面接結果をAIに学習させる</em>」
-      </h3>
-      <p class="concept-body">
-        本サービスは、単なる採用管理システムではありません。<br>
-        「面接コボット」の裏側で、システムが現場の担当者や応募者へSMSで自動介入し、対応遅れや入力漏れを防ぎます。<br><br>
-        そして、半強制的に蓄積された<strong>「100%正確な採否データ」をIndeedのAIに直接フィードバック。</strong><br>
-        現場の負担を減らしながら、集客の質を自動で高め続ける<strong>好循環＝採用エコシステム</strong>を生み出します。
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 4. FLOW DIAGRAM ===== -->
-<section class="section flow-section">
-  <div class="container">
-    <span class="section-tag flow-tag">&#x1F504; HOW IT WORKS</span>
-    <h2 class="section-title flow-title">応募が来た瞬間から、システムが動き出す。</h2>
-    <div class="divider"></div>
-    <p class="section-lead flow-lead">「人手ゼロで、漏れゼロ。」&nbsp; 従来の手作業フローと比較してご覧ください。</p>
-
-    <!-- BEFORE / AFTER 比較 -->
-    <div class="flow-compare">
-      <!-- BEFORE -->
-      <div class="flow-col flow-col-before">
-        <div class="flow-col-header">&#x274C; BEFORE ／ 従来の手作業フロー</div>
-        <div class="flow-col-body">
-          <div class="flow-step">
-            <div class="flow-step-icon">&#x1F4E9;</div>
-            <div class="flow-step-text">応募が来る</div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-step-icon">&#x1F464;</div>
-            <div class="flow-step-text"><strong style="color:#C62828;">担当者が気づく？</strong><br>見落とし・遅延リスク大</div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-step-icon">&#x1F4DE;</div>
-            <div class="flow-step-text">手動でメール返信 / 電話</div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-step-icon">&#x1F4C5;</div>
-            <div class="flow-step-text">日程調整（往復メール・数日ロス）</div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-step-icon">&#x1F91D;</div>
-            <div class="flow-step-text">面接実施</div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-step-icon">&#x270F;</div>
-            <div class="flow-step-text"><strong style="color:#C62828;">選考結果入力</strong><br>&#x26A0; 忘れがち・後回し</div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-step-icon">&#x274C;</div>
-            <div class="flow-step-text"><strong style="color:#C62828;">Indeedへ未反映</strong><br>精度改善ゼロ・コスト増大</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VS -->
-      <div class="flow-vs">VS</div>
-
-      <!-- AFTER -->
-      <div class="flow-col flow-col-after">
-        <div class="flow-col-header">&#x2705; AFTER ／ 本サービス導入後の自動フロー</div>
-        <div class="flow-col-body">
-          <div class="flow-step">
-            <div class="flow-step-icon" style="background:#0052CC;">&#x1F4F2;</div>
-            <div class="flow-step-text"><strong>応募発生</strong><br>Indeed / AirWork / 自社HP 等</div>
-          </div>
-          <div class="flow-step flow-step-auto">
-            <div class="flow-step-icon" style="background:var(--orange);">&#x1F916;</div>
-            <div class="flow-step-text">
-              <span class="flow-auto-badge">&#x26A1; 自動化①</span><br>
-              <strong>チャットボット</strong>で面接日アンケート自動送信<br>
-              ＋ 担当者SMSへ<strong>対応遅延アラート</strong>自動通知<br>
-              <span style="font-size:11px;color:#546E7A;">※夜間・土日 &rarr; AI面接へ自動誘導</span>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-step-icon" style="background:var(--blue);">&#x1F4F1;</div>
-            <div class="flow-step-text"><strong>スマホ1タップで面接確定</strong><br>PCを開かず、現場が即時対応</div>
-          </div>
-          <div class="flow-step flow-step-auto">
-            <div class="flow-step-icon" style="background:var(--orange);">&#x1F514;</div>
-            <div class="flow-step-text">
-              <span class="flow-auto-badge">&#x26A1; 自動化②</span><br>
-              前日リマインドSMS＋途中離脱者への<strong>ナーチャリングSMS</strong>自動配信
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-step-icon" style="background:var(--blue);">&#x1F91D;</div>
-            <div class="flow-step-text"><strong>面接実施</strong><br>採用パンフ・マニュアルで魅力付け＆評価</div>
-          </div>
-          <div class="flow-step flow-step-auto">
-            <div class="flow-step-icon" style="background:var(--orange);">&#x23F0;</div>
-            <div class="flow-step-text">
-              <span class="flow-auto-badge">&#x26A1; 自動化③</span><br>
-              未更新の担当者へ<strong>「選考結果・不採用理由を入力してください」</strong>とSMSで自動催促
-            </div>
-          </div>
-          <div class="flow-step" style="background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border-left:3px solid var(--green);">
-            <div class="flow-step-icon" style="background:var(--green);">&#x1F504;</div>
-            <div class="flow-step-text">
-              <strong style="color:var(--green);">採否データ &rarr; Indeed自動連携</strong><br>
-              AIが学習し、次回の有効応募率が向上
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- LOOP BANNER -->
-    <div class="flow-loop-banner">
-      <div class="loop-icon">&#x267B;</div>
-      <div class="loop-content">
-        <div class="loop-title">&#x1F4C8; Indeedデータ連携ループ ── 攻めの採用改善</div>
-        <div class="loop-desc">入力したデータが、次の採用を変える。採否データを連携するたびに、Indeedの AIが自社の採用基準を深く学習し、有効応募率・応募数・採用パフォーマンスが自動改善されていきます。</div>
-      </div>
-      <div class="loop-steps">
-        <div class="loop-step-item">&#x1F4CA; 採否データ入力</div>
-        <span class="loop-arrow">&#x2192;</span>
-        <div class="loop-step-item">&#x1F916; Indeed AI学習</div>
-        <span class="loop-arrow">&#x2192;</span>
-        <div class="loop-step-item">&#x1F4C8; 集客精度向上</div>
-        <span class="loop-arrow">&#x21BA;</span>
-        <div class="loop-step-item">&#x2B50; 良い人材が集まる</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 5. FEATURES ===== -->
-<section class="section features" id="features">
-  <div class="container">
-    <span class="section-tag" style="background:rgba(21,101,192,.1);color:var(--blue);">&#x2699;&#xFE0F; FEATURES</span>
-    <h2 class="section-title">2つのコア機能<br>「守り」と「攻め」の自動化</h2>
-    <div class="divider"></div>
-    <div class="features-grid">
-      <!-- 守り -->
-      <div class="feature-col">
-        <div class="feature-col-header defense">
-          <div class="feature-label">&#x1F6E1; DEFENSE</div>
-          <div class="feature-col-title">面接コボット拡張<br>歩留まり改善パッケージ</div>
-          <div class="feature-col-sub">現場の言い訳をなくし、応募者を確実に入社へ繋げます。</div>
-        </div>
-        <div class="feature-items defense">
-          <div class="feature-item">
-            <div class="feature-num-wrap"><div class="feature-num">1</div></div>
-            <div>
-              <div class="feature-item-title">担当者への対応遅延アラート（SMS通知）</div>
-              <div class="feature-item-desc">応募から一定時間動きがない場合、現場の支店長・店長のスマホに直接SMSで通知。PCを開かず1タップで面接を確定でき、リードタイムを数日単位から<strong>「数時間」</strong>へ短縮します。</div>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-num-wrap"><div class="feature-num">2</div></div>
-            <div>
-              <div class="feature-item-title">ステータス未更新の自動催促</div>
-              <div class="feature-item-desc">面接日を過ぎても結果が未入力の場合、<strong>「選考結果と不採用理由を入力してください」</strong>と自動でリマインド。データが腐るのを防ぎます。</div>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-num-wrap"><div class="feature-num">3</div></div>
-            <div>
-              <div class="feature-item-title">応募者への自動リマインド・離脱防止</div>
-              <div class="feature-item-desc">面接前日の連絡や、途中離脱した候補者へのナーチャリング（掘り起こし）をSMSで自動配信します。</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 攻め -->
-      <div class="feature-col">
-        <div class="feature-col-header offense">
-          <div class="feature-label">&#x1F3AF; OFFENSE</div>
-          <div class="feature-col-title">Indeed Disposition Sync<br>採否データ連携</div>
-          <div class="feature-col-sub">「どんな人を採用し、どんな人を不採用にしたか」をAIに学習させます。</div>
-        </div>
-        <div class="feature-items offense">
-          <div class="feature-item">
-            <div class="feature-num-wrap"><div class="feature-num" style="background:var(--green);">4</div></div>
-            <div>
-              <div class="feature-item-title">Indeed AIによるターゲティングの自動最適化</div>
-              <div class="feature-item-desc">コボット上で確定した「採用」「不採用」「辞退」のステータスと、具体的な「不採用理由」のデータをIndeed側に<strong>自動でフィードバック</strong>します。</div>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-num-wrap"><div class="feature-num" style="background:var(--green);">5</div></div>
-            <div>
-              <div class="feature-item-title">無駄な応募を減らし、CPA（採用単価）を劇的削減</div>
-              <div class="feature-item-desc">IndeedのAIが貴社の採用基準を学習し、「受かりやすい人」へ優先的に求人を表示。<strong>「とりあえず応募」が徐々に減り、面接の質と有効応募率が飛躍的に向上</strong>します。</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 6. EVIDENCE ===== -->
-<section class="section evidence" id="evidence">
-  <div class="container">
-    <span class="section-tag evidence-tag">&#x1F4CA; EVIDENCE</span>
-    <h2 class="section-title">圧倒的なエビデンスと導入実績</h2>
-    <div class="divider orange"></div>
-    <p class="section-lead">数字で見る導入効果。Indeed公式データと実際の導入事例が、その実力を証明しています。</p>
-    <div class="evidence-grid">
-      <!-- Indeed公式 -->
-      <div class="evidence-card indeed">
-        <div class="evidence-card-header">&#x1F310; データ共有による集客力の向上（Indeed公式データ）</div>
-        <div class="evidence-card-body">
-          <div class="stat-grid">
-            <div class="stat-item">
-              <span class="stat-num">2.1<small style="font-size:.5em;font-weight:700;">倍</small></span>
-              <div class="stat-label">応募数が増加</div>
-            </div>
-            <div class="stat-item">
-              <span class="stat-num">3.1<small style="font-size:.5em;font-weight:700;">倍</small></span>
-              <div class="stat-label">自動アプローチ経由の<br>有効応募率が向上</div>
-            </div>
-            <div class="stat-item">
-              <span class="stat-num orange">+30<small style="font-size:.5em;font-weight:700;">%</small></span>
-              <div class="stat-label">採用パフォーマンスが<br>改善</div>
-            </div>
-          </div>
-          <p style="font-size:12px;color:#4A5568;line-height:1.8;">採用ステータスを正確に更新・連携している企業は、そうでない企業と比較して劇的な成果の差を生み出しています。（Indeed社公式提供データより）</p>
-        </div>
-      </div>
-      <!-- 導入事例 -->
-      <div class="evidence-card case">
-        <div class="evidence-card-header">&#x1F3ED; リードタイム短縮・面接設定率UP（物流企業：日の出運輸様）</div>
-        <div class="evidence-card-body">
-          <div class="case-row">
-            <span class="case-tag-before">BEFORE</span>
-            <div class="case-desc">支店長が面接日を確定するまでに<strong>平均18時間（最大48時間）</strong>かかり、機会損失が多発。面接設定率は<strong>36%</strong>に留まっていた。</div>
-          </div>
-          <div class="case-row">
-            <span class="case-tag-after">AFTER</span>
-            <div class="case-desc">担当者へのSMS通知機能導入後、リードタイムが<strong>平均6時間（最短2時間）へ激減</strong>。面接設定率も<strong>36% → 60%超</strong>へ過去最高を記録。</div>
-          </div>
-          <div style="background:rgba(21,101,192,.06);border-radius:8px;padding:12px 16px;margin-top:8px;">
-            <div style="display:flex;gap:24px;flex-wrap:wrap;">
-              <div>
-                <div style="font-size:11px;color:#4A5568;">リードタイム</div>
-                <div style="font-size:22px;font-weight:900;color:var(--blue);">18h <span style="font-size:14px;">&#x2192;</span> <span style="color:var(--green);">6h</span></div>
-              </div>
-              <div>
-                <div style="font-size:11px;color:#4A5568;">面接設定率</div>
-                <div style="font-size:22px;font-weight:900;color:var(--blue);">36% <span style="font-size:14px;">&#x2192;</span> <span style="color:var(--green);">60%+</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 7. WHY US ===== -->
-<section class="section why">
-  <div class="container">
-    <span class="section-tag why-tag">&#x1F31F; WHY US</span>
-    <h2 class="section-title">なぜ、私たちが選ばれるのか</h2>
-    <div class="divider green"></div>
-    <div class="why-box">
+      <!-- Left: Copy -->
       <div>
-        <p class="why-text">
-          システムベンダーは「ツール」を売りますが、<br>
-          私たちは<strong>「泥臭い運用支援と結果」</strong>を提供します。<br><br>
-          「システムを入れたが現場が入力しない」という最大の壁を、SMS自動催促などの<strong>「仕組み」で突破</strong>。<br><br>
-          さらに、蓄積された不採用理由のデータから「求人原稿の修正」「面接マニュアルの作成」「労働条件の見直し」まで、採用成功に向けた<strong>総合的なコンサルティング伴走</strong>を行います。
+        <div class="badge bg-indigo-50 text-indigo-600 border border-indigo-100 mb-6">
+          <span data-lucide="zap" class="w-3 h-3"></span>
+          採用支援パッケージ &nbsp;|&nbsp; 面接コボット自動化 × Indeed Disposition Sync
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-slate-900 mb-4">
+          現場の「対応遅れ」<br>「ステータス更新漏れ」をゼロにし、<br>
+          <span class="text-indigo-600">Indeedの「集客力」を</span><br>
+          最大化する。
+        </h1>
+        <p class="text-xl font-bold text-slate-700 mb-6">採用を自ら学習する採用支援。</p>
+        <p class="text-sm text-slate-500 leading-relaxed mb-10">
+          面接設定リードタイムを平均31時間から最短2時間へ。<br>
+          採否データをIndeedに連携するだけで、有効応募率が最大3.1倍に。
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-3 mb-12">
+          <a href="#cta" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-200 text-sm">
+            <span data-lucide="clipboard-check" class="w-4 h-4"></span>
+            3分で完了：歩留まり改善余地を診断する
+          </a>
+          <a href="#proof" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white text-slate-700 font-semibold rounded-xl border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all text-sm">
+            <span data-lucide="file-text" class="w-4 h-4"></span>
+            導入事例集をダウンロード
+          </a>
+        </div>
+
+        <!-- Trust badges: 王冠スタイル -->
+        <div class="flex flex-wrap gap-3 pt-5">
+
+          <!-- Badge 1: 有効応募率 -->
+          <div class="relative bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md transition-shadow min-w-[130px]">
+            <!-- Crown SVG -->
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+              <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 18 L4 8 L9 13 L14 3 L19 13 L24 8 L26 18 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.2" stroke-linejoin="round"/>
+                <circle cx="14" cy="3" r="2" fill="#FCD34D"/>
+                <circle cx="4" cy="8" r="1.5" fill="#FCD34D"/>
+                <circle cx="24" cy="8" r="1.5" fill="#FCD34D"/>
+                <rect x="2" y="17" width="24" height="3" rx="1.5" fill="#D97706"/>
+              </svg>
+            </div>
+            <div class="text-center mt-1">
+              <div class="text-[10px] font-semibold text-amber-700 mb-1">有効応募率</div>
+              <div class="text-2xl font-black text-amber-600 leading-none">3.1<span class="text-base font-bold">倍</span></div>
+              <div class="text-[9px] text-amber-500 mt-1 font-medium">Indeed公式データ</div>
+            </div>
+          </div>
+
+          <!-- Badge 2: リードタイム -->
+          <div class="relative bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md transition-shadow min-w-[130px]">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+              <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 18 L4 8 L9 13 L14 3 L19 13 L24 8 L26 18 Z" fill="#6366F1" stroke="#4F46E5" stroke-width="1.2" stroke-linejoin="round"/>
+                <circle cx="14" cy="3" r="2" fill="#A5B4FC"/>
+                <circle cx="4" cy="8" r="1.5" fill="#A5B4FC"/>
+                <circle cx="24" cy="8" r="1.5" fill="#A5B4FC"/>
+                <rect x="2" y="17" width="24" height="3" rx="1.5" fill="#4F46E5"/>
+              </svg>
+            </div>
+            <div class="text-center mt-1">
+              <div class="text-[10px] font-semibold text-indigo-700 mb-1">リードタイム</div>
+              <div class="text-lg font-black text-indigo-600 leading-none whitespace-nowrap">31h→<span class="text-indigo-500">2h</span></div>
+              <div class="text-[9px] text-indigo-400 mt-1 font-medium">最短2時間で確定</div>
+            </div>
+          </div>
+
+          <!-- Badge 3: 応募数 -->
+          <div class="relative bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md transition-shadow min-w-[130px]">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+              <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 18 L4 8 L9 13 L14 3 L19 13 L24 8 L26 18 Z" fill="#10B981" stroke="#059669" stroke-width="1.2" stroke-linejoin="round"/>
+                <circle cx="14" cy="3" r="2" fill="#6EE7B7"/>
+                <circle cx="4" cy="8" r="1.5" fill="#6EE7B7"/>
+                <circle cx="24" cy="8" r="1.5" fill="#6EE7B7"/>
+                <rect x="2" y="17" width="24" height="3" rx="1.5" fill="#059669"/>
+              </svg>
+            </div>
+            <div class="text-center mt-1">
+              <div class="text-[10px] font-semibold text-emerald-700 mb-1">応募数</div>
+              <div class="text-2xl font-black text-emerald-600 leading-none">2.1<span class="text-base font-bold">倍</span></div>
+              <div class="text-[9px] text-emerald-500 mt-1 font-medium">Indeed公式データ</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right: Animated Network SVG -->
+      <div class="relative flex items-end justify-center pb-0 lg:pb-0 hidden lg:flex">
+        <svg viewBox="0 0 500 480" class="w-full max-w-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background glow -->
+          <defs>
+            <radialGradient id="glowCenter" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.12"/>
+              <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="glowGreen" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#059669" stop-opacity="0.15"/>
+              <stop offset="100%" stop-color="#059669" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="blur">
+              <feGaussianBlur stdDeviation="8"/>
+            </filter>
+          </defs>
+
+          <!-- Glow circles -->
+          <circle cx="250" cy="220" r="80" fill="url(#glowCenter)" filter="url(#blur)"/>
+
+          <!-- ======= CONNECTION LINES ======= -->
+          <!-- Center → Top-Left (SMS現場): コボットから担当者へ自動SMS送信 -->
+          <line x1="250" y1="220" x2="100" y2="100" stroke="#C7D2FE" stroke-width="1.5"/>
+          <line x1="250" y1="220" x2="100" y2="100" stroke="#4F46E5" stroke-width="2" class="flow-line" opacity="0.7"/>
+
+          <!-- 現場担当者 → コボット: ステータス・不採用理由の入力データ返送 -->
+          <line x1="110" y1="108" x2="242" y2="226" stroke="#FEF9C3" stroke-width="1.5"/>
+          <line x1="110" y1="108" x2="242" y2="226" stroke="#F59E0B" stroke-width="1.8" stroke-dasharray="4 5" class="flow-line" opacity="0.6" style="animation-delay:1.9s"/>
+          <!-- Return path midpoint label -->
+          <rect x="140" y="149" width="82" height="14" rx="6" fill="white" stroke="#BBF7D0" stroke-width="1"/>
+          <text x="181" y="159.5" text-anchor="middle" font-size="7" font-weight="700" fill="#166534" font-family="'Noto Sans JP', sans-serif">入力データを回収</text>
+
+          <!-- Center → Top-Right (Indeed AI) -->
+          <line x1="250" y1="220" x2="400" y2="100" stroke="#C7D2FE" stroke-width="1.5"/>
+          <line x1="250" y1="220" x2="400" y2="100" stroke="#059669" stroke-width="2" class="flow-line flow-line-2" opacity="0.7"/>
+
+          <!-- Center → Bottom-Left (応募者) -->
+          <line x1="250" y1="220" x2="90" y2="360" stroke="#C7D2FE" stroke-width="1.5"/>
+          <line x1="250" y1="220" x2="90" y2="360" stroke="#4F46E5" stroke-width="2" class="flow-line flow-line-3" opacity="0.7"/>
+
+          <!-- Center → Bottom-Right (データ蓄積) -->
+          <line x1="250" y1="220" x2="420" y2="360" stroke="#C7D2FE" stroke-width="1.5"/>
+          <line x1="250" y1="220" x2="420" y2="360" stroke="#059669" stroke-width="2" class="flow-line" opacity="0.7" style="animation-delay:1.2s"/>
+
+          <!-- Indeed ↔ データ (feedback loop arc) -->
+          <path d="M 400 120 Q 480 240 420 340" stroke="#D1FAE5" stroke-width="1.5" fill="none"/>
+          <path d="M 400 120 Q 480 240 420 340" stroke="#059669" stroke-width="1.5" fill="none" stroke-dasharray="6 5" opacity="0.5" class="flow-line" style="animation-delay:0.4s"/>
+
+          <!-- ======= PULSE RINGS (center) ======= -->
+          <circle cx="250" cy="220" r="52" stroke="#4F46E5" stroke-width="1" fill="none" opacity="0.2" class="pulse-ring"/>
+          <circle cx="250" cy="220" r="52" stroke="#4F46E5" stroke-width="1" fill="none" opacity="0.15" class="pulse-ring" style="animation-delay:1s"/>
+
+          <!-- ======= CENTER NODE: 面接コボット ======= -->
+          <circle cx="250" cy="220" r="54" fill="white" stroke="#E0E7FF" stroke-width="2" filter="url(#blur)"/>
+          <circle cx="250" cy="220" r="50" fill="white" stroke="#C7D2FE" stroke-width="1.5"/>
+          <circle cx="250" cy="220" r="44" fill="#EEF2FF"/>
+          <!-- Robot icon -->
+          <rect x="232" y="203" width="36" height="28" rx="6" fill="#4F46E5"/>
+          <circle cx="244" cy="214" r="4" fill="white"/>
+          <circle cx="256" cy="214" r="4" fill="white"/>
+          <rect x="241" y="220" width="18" height="4" rx="2" fill="white" opacity="0.7"/>
+          <rect x="246" y="196" width="8" height="7" rx="2" fill="#4F46E5" stroke="#C7D2FE" stroke-width="1.5"/>
+          <circle cx="250" cy="194" r="3" fill="#818CF8"/>
+          <rect x="226" y="209" width="6" height="12" rx="3" fill="#4F46E5"/>
+          <rect x="268" y="209" width="6" height="12" rx="3" fill="#4F46E5"/>
+          <!-- Label -->
+          <text x="250" y="272" text-anchor="middle" font-size="11" font-weight="700" fill="#4338CA" font-family="'Noto Sans JP', sans-serif">面接コボット</text>
+
+          <!-- ======= NODE: SMS / 現場担当者 ======= -->
+          <circle cx="100" cy="90" r="38" fill="white" stroke="#E0E7FF" stroke-width="1.5"/>
+          <!-- SMS icon -->
+          <rect x="82" y="74" width="36" height="26" rx="5" fill="#4F46E5"/>
+          <path d="M82 100 l10 8 l-10 0 z" fill="#4F46E5"/>
+          <rect x="87" y="81" width="26" height="3" rx="1.5" fill="white" opacity="0.8"/>
+          <rect x="87" y="87" width="18" height="3" rx="1.5" fill="white" opacity="0.6"/>
+          <text x="100" y="141" text-anchor="middle" font-size="10" font-weight="700" fill="#334155" font-family="'Noto Sans JP', sans-serif">現場担当者</text>
+          <!-- 回収する情報 3種 -->
+          <rect x="28" y="146" width="144" height="15" rx="7" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="0.8"/>
+          <text x="100" y="157" text-anchor="middle" font-size="7.5" font-weight="600" fill="#166534" font-family="'Noto Sans JP', sans-serif">↩ 面接ステータスの入力</text>
+          <rect x="28" y="164" width="144" height="15" rx="7" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="0.8"/>
+          <text x="100" y="175" text-anchor="middle" font-size="7.5" font-weight="600" fill="#166534" font-family="'Noto Sans JP', sans-serif">↩ 採用 / 不採用の結果記録</text>
+          <rect x="28" y="182" width="144" height="15" rx="7" fill="#FEF3C7" stroke="#FCD34D" stroke-width="0.8"/>
+          <text x="100" y="193" text-anchor="middle" font-size="7.5" font-weight="600" fill="#92400E" font-family="'Noto Sans JP', sans-serif">↩ 不採用理由の回収</text>
+          <!-- Badge -->
+          <rect x="55" y="56" width="90" height="16" rx="8" fill="#059669"/>
+          <text x="100" y="68" text-anchor="middle" font-size="8" font-weight="700" fill="white" font-family="'Noto Sans JP', sans-serif">守り ● 情報回収</text>
+
+          <!-- ======= NODE: Indeed AI ======= -->
+          <circle cx="400" cy="90" r="38" fill="white" stroke="#D1FAE5" stroke-width="1.5"/>
+          <!-- Indeed icon style -->
+          <rect x="382" y="73" width="36" height="34" rx="6" fill="#003580"/>
+          <text x="400" y="94" text-anchor="middle" font-size="12" font-weight="900" fill="white" font-family="'Inter', sans-serif">in</text>
+          <text x="400" y="141" text-anchor="middle" font-size="10" font-weight="700" fill="#334155" font-family="'Noto Sans JP', sans-serif">Indeed AI</text>
+          <text x="400" y="154" text-anchor="middle" font-size="9" fill="#64748B" font-family="'Noto Sans JP', sans-serif">採否データ連携</text>
+          <!-- Badge -->
+          <rect x="371" y="56" width="58" height="16" rx="8" fill="#059669"/>
+          <text x="400" y="68" text-anchor="middle" font-size="8.5" font-weight="700" fill="white" font-family="'Noto Sans JP', sans-serif">攻め ● AI学習</text>
+
+          <!-- ======= NODE: 応募者 ======= -->
+          <circle cx="90" cy="360" r="34" fill="white" stroke="#E0E7FF" stroke-width="1.5"/>
+          <circle cx="90" cy="352" r="10" fill="#94A3B8"/>
+          <path d="M68 380 Q90 365 112 380" fill="#94A3B8"/>
+          <text x="90" y="406" text-anchor="middle" font-size="10" font-weight="700" fill="#334155" font-family="'Noto Sans JP', sans-serif">応募者</text>
+          <text x="90" y="419" text-anchor="middle" font-size="9" fill="#64748B" font-family="'Noto Sans JP', sans-serif">自動リマインド</text>
+
+          <!-- ======= NODE: データ蓄積 ======= -->
+          <circle cx="420" cy="360" r="34" fill="white" stroke="#D1FAE5" stroke-width="1.5"/>
+          <rect x="404" y="343" width="32" height="24" rx="4" fill="#059669"/>
+          <rect x="408" y="350" width="8" height="10" rx="1" fill="white" opacity="0.5"/>
+          <rect x="418" y="346" width="8" height="14" rx="1" fill="white" opacity="0.7"/>
+          <rect x="428" y="352" width="5" height="8" rx="1" fill="white" opacity="0.9"/>
+          <text x="420" y="406" text-anchor="middle" font-size="10" font-weight="700" fill="#334155" font-family="'Noto Sans JP', sans-serif">採否データ</text>
+          <text x="420" y="419" text-anchor="middle" font-size="9" fill="#64748B" font-family="'Noto Sans JP', sans-serif">蓄積・Indeed連携</text>
+
+          <!-- Feedback loop label -->
+          <text x="472" y="240" text-anchor="middle" font-size="8.5" fill="#059669" font-weight="700" font-family="'Noto Sans JP', sans-serif" transform="rotate(90 472 240)">AI学習ループ</text>
+
+        </svg>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     1.5 LOGO BAR
+================================================ -->
+<section class="bg-white border-b border-slate-100 py-8">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">現在 <span class="text-indigo-600 font-bold">12社以上</span> が導入・試験運用中</p>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-indigo-400"></div>物流・配送業
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-emerald-400"></div>飲食・フード
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-amber-400"></div>小売・EC
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-rose-400"></div>介護・医療
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-violet-400"></div>製造・工場
+      </div>
+      <div class="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-500 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-cyan-400"></div>人材・派遣
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     2. お悩み
+================================================ -->
+<section class="py-28 bg-white" id="gap">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <!-- ===== 2カラム: イラスト ＋ お悩みリスト ===== -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center mb-20">
+
+      <!-- 左: 採用フロー崩壊イラスト -->
+      <div class="reveal relative flex items-center justify-center">
+        <!-- 装飾ドット群 -->
+        <div class="absolute top-6  left-4  w-3 h-3 rounded-full bg-red-400   opacity-70"></div>
+        <div class="absolute top-12 right-8  w-2 h-2 rounded-full bg-indigo-400 opacity-60"></div>
+        <div class="absolute top-3  right-20 w-4 h-4 rounded-full bg-amber-300 opacity-50"></div>
+        <div class="absolute bottom-10 left-10 w-2.5 h-2.5 rounded-full bg-emerald-400 opacity-60"></div>
+        <div class="absolute bottom-4 right-6  w-3 h-3 rounded-full bg-cyan-400  opacity-50"></div>
+        <div class="absolute top-1/2 left-2  w-2 h-2 rounded-full bg-violet-400 opacity-50"></div>
+        <div class="absolute bottom-16 right-14 w-2 h-2 rounded-full bg-rose-400 opacity-60"></div>
+
+        <svg viewBox="0 0 460 400" class="w-full max-w-lg" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="soft-shadow">
+              <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00000018"/>
+            </filter>
+          </defs>
+
+          <!-- ===== 中央ノード: 採用管理 ===== -->
+          <circle cx="230" cy="200" r="62" fill="#EEF2FF" filter="url(#soft-shadow)"/>
+          <circle cx="230" cy="200" r="54" fill="white" stroke="#C7D2FE" stroke-width="1.5"/>
+          <!-- ビルディング/会社アイコン -->
+          <rect x="210" y="183" width="40" height="32" rx="3" fill="#4F46E5"/>
+          <rect x="214" y="187" width="8"  height="8"  rx="1" fill="white" opacity="0.7"/>
+          <rect x="226" y="187" width="8"  height="8"  rx="1" fill="white" opacity="0.7"/>
+          <rect x="238" y="187" width="8"  height="8"  rx="1" fill="white" opacity="0.7"/>
+          <rect x="214" y="199" width="8"  height="8"  rx="1" fill="white" opacity="0.7"/>
+          <rect x="238" y="199" width="8"  height="8"  rx="1" fill="white" opacity="0.7"/>
+          <rect x="223" y="203" width="14" height="12" rx="1" fill="#818CF8"/>
+          <!-- ラベル -->
+          <text x="230" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="#4338CA" font-family="'Noto Sans JP',sans-serif">現在の採用フロー</text>
+
+          <!-- ===== 上: Indeed / 応募媒体 ===== -->
+          <circle cx="230" cy="62" r="34" fill="white" stroke="#E2E8F0" stroke-width="1.5" filter="url(#soft-shadow)"/>
+          <rect x="214" y="46" width="32" height="30" rx="5" fill="#003580"/>
+          <text x="230" y="66" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="'Inter',sans-serif">in</text>
+          <text x="230" y="106" text-anchor="middle" font-size="9.5" font-weight="700" fill="#334155" font-family="'Noto Sans JP',sans-serif">Indeed / 媒体</text>
+          <!-- 接続線（点線・問題あり） -->
+          <line x1="230" y1="96"  x2="230" y2="138" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <!-- ⚡ 警告マーク -->
+          <circle cx="230" cy="120" r="9" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1"/>
+          <text x="230" y="124" text-anchor="middle" font-size="10" fill="#D97706" font-weight="900">!</text>
+
+          <!-- ===== 右上: 遅延クロック ===== -->
+          <circle cx="376" cy="100" r="34" fill="white" stroke="#FEE2E2" stroke-width="1.5" filter="url(#soft-shadow)"/>
+          <circle cx="376" cy="88" r="16" stroke="#EF4444" stroke-width="2.5" fill="#FFF5F5"/>
+          <path d="M376 80 L376 88 L381 93" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+          <text x="376" y="112" text-anchor="middle" font-size="9"   fill="#DC2626" font-weight="700" font-family="'Inter',sans-serif">31h放置</text>
+          <text x="376" y="124" text-anchor="middle" font-size="9"   fill="#334155" font-weight="700" font-family="'Noto Sans JP',sans-serif">対応遅延</text>
+          <!-- 接続線 -->
+          <line x1="300" y1="152" x2="345" y2="120" stroke="#FCA5A5" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <circle cx="322" cy="136" r="8" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1"/>
+          <text x="322" y="140" text-anchor="middle" font-size="9" fill="#EF4444" font-weight="700">✕</text>
+
+          <!-- ===== 右下: ブラックボックス ===== -->
+          <circle cx="376" cy="300" r="34" fill="white" stroke="#FEF3C7" stroke-width="1.5" filter="url(#soft-shadow)"/>
+          <rect x="360" y="282" width="32" height="26" rx="4" fill="#1E293B"/>
+          <rect x="364" y="291" width="14" height="3" rx="1.5" fill="#475569"/>
+          <rect x="364" y="297" width="10" height="3" rx="1.5" fill="#475569"/>
+          <text x="384" y="293" font-size="8" fill="#F59E0B" font-weight="900">?</text>
+          <text x="384" y="302" font-size="8" fill="#F59E0B" font-weight="900">?</text>
+          <text x="376" y="326" text-anchor="middle" font-size="9"   fill="#334155" font-weight="700" font-family="'Noto Sans JP',sans-serif">ステータス不明</text>
+          <!-- 接続線 -->
+          <line x1="300" y1="248" x2="344" y2="278" stroke="#FCD34D" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <circle cx="322" cy="263" r="8" fill="#FFF9E6" stroke="#FCD34D" stroke-width="1"/>
+          <text x="322" y="267" text-anchor="middle" font-size="9" fill="#D97706" font-weight="700">✕</text>
+
+          <!-- ===== 左下: 不採用理由不明 ===== -->
+          <circle cx="84" cy="300" r="34" fill="white" stroke="#EDE9FE" stroke-width="1.5" filter="url(#soft-shadow)"/>
+          <!-- 思考バブル -->
+          <circle cx="84" cy="284" r="8" fill="#EDE9FE" stroke="#DDD6FE" stroke-width="1"/>
+          <text x="84" y="288" text-anchor="middle" font-size="9" fill="#7C3AED" font-weight="900">?</text>
+          <circle cx="97" cy="292" r="5" fill="#EDE9FE" stroke="#DDD6FE" stroke-width="1"/>
+          <circle cx="84" cy="297" r="12" fill="#EDE9FE" stroke="#DDD6FE" stroke-width="1"/>
+          <text x="84" y="301" text-anchor="middle" font-size="7" fill="#6D28D9" font-weight="700">理由?</text>
+          <text x="84" y="326" text-anchor="middle" font-size="9"   fill="#334155" font-weight="700" font-family="'Noto Sans JP',sans-serif">不採用理由不明</text>
+          <!-- 接続線 -->
+          <line x1="160" y1="248" x2="116" y2="278" stroke="#DDD6FE" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <circle cx="138" cy="263" r="8" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+          <text x="138" y="267" text-anchor="middle" font-size="9" fill="#7C3AED" font-weight="700">✕</text>
+
+          <!-- ===== 左上: ターゲット外応募 ===== -->
+          <circle cx="84" cy="100" r="34" fill="white" stroke="#DBEAFE" stroke-width="1.5" filter="url(#soft-shadow)"/>
+          <!-- 人々アイコン群 -->
+          <circle cx="76" cy="88" r="7" fill="#BFDBFE"/>
+          <path d="M64 102 Q76 95 88 102" fill="#BFDBFE"/>
+          <circle cx="92" cy="88" r="7" fill="#BFDBFE"/>
+          <path d="M80 102 Q92 95 104 102" fill="#BFDBFE"/>
+          <line x1="72" y1="94" x2="80" y2="102" stroke="#EF4444" stroke-width="1.5"/>
+          <line x1="80" y1="94" x2="72" y2="102" stroke="#EF4444" stroke-width="1.5"/>
+          <line x1="88" y1="94" x2="96" y2="102" stroke="#EF4444" stroke-width="1.5"/>
+          <line x1="96" y1="94" x2="88" y2="102" stroke="#EF4444" stroke-width="1.5"/>
+          <text x="84"  y="122" text-anchor="middle" font-size="9"   fill="#334155" font-weight="700" font-family="'Noto Sans JP',sans-serif">ターゲット外応募</text>
+          <!-- 接続線 -->
+          <line x1="160" y1="152" x2="116" y2="122" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <circle cx="138" cy="137" r="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+          <text x="138" y="141" text-anchor="middle" font-size="9" fill="#3B82F6" font-weight="700">✕</text>
+
+          <!-- 中央から伸びるメイン接続線 -->
+          <line x1="230" y1="138" x2="230" y2="96"  stroke="#C7D2FE" stroke-width="1" opacity="0.4"/>
+        </svg>
+      </div>
+
+      <!-- 右: テキスト ＋ お悩みリスト -->
+      <div class="reveal">
+        <div class="badge bg-red-50 text-red-600 border border-red-100 mb-5">
+          <span data-lucide="message-circle" class="w-3 h-3"></span>
+          採用担当者のお悩み
+        </div>
+        <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-6">
+          採用活動で、<br>こんなお悩みありませんか？
+        </h2>
+
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span data-lucide="check" class="w-3.5 h-3.5 text-red-500"></span>
+            </div>
+            <div>
+              <span class="font-semibold text-slate-800 text-sm">現場が忙しく、面接日程の確定が後回しに。</span>
+              <span class="text-slate-500 text-sm">気づけば他社で内定していた。</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span data-lucide="check" class="w-3.5 h-3.5 text-amber-500"></span>
+            </div>
+            <div>
+              <span class="font-semibold text-slate-800 text-sm">面接後のステータスが誰も更新してくれない。</span>
+              <span class="text-slate-500 text-sm">進捗がブラックボックス化している。</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span data-lucide="check" class="w-3.5 h-3.5 text-indigo-500"></span>
+            </div>
+            <div>
+              <span class="font-semibold text-slate-800 text-sm">「とりあえず応募」が多く、ミスマッチな面接ばかり。</span>
+              <span class="text-slate-500 text-sm">面接工数と広告費が無駄になっている。</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-violet-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span data-lucide="check" class="w-3.5 h-3.5 text-violet-500"></span>
+            </div>
+            <div>
+              <span class="font-semibold text-slate-800 text-sm">不採用理由が「条件が合わない」だけで曖昧。</span>
+              <span class="text-slate-500 text-sm">何が原因か分からず、次の求人改善に活かせない。</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="bg-red-50 border border-red-100 rounded-xl px-5 py-4 flex items-start gap-3">
+          <span data-lucide="alert-triangle" class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"></span>
+          <p class="text-sm text-red-700 leading-relaxed">
+            これらはすべて、<strong>「現場の入力漏れ」と「媒体とデータの分断」</strong>という2つの根本原因から生じています。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 詳細カード 4枚 ===== -->
+    <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-10">それぞれの損失を、もっと詳しく</p>
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <!-- Card 1: 応募スルー -->
+      <div class="reveal bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all group">
+        <!-- Illustration area -->
+        <div class="bg-gradient-to-br from-red-50 to-rose-100 h-44 relative flex items-center justify-center overflow-hidden">
+          <!-- Decorative circles -->
+          <div class="absolute top-3 right-4 w-20 h-20 rounded-full bg-red-100/60"></div>
+          <div class="absolute bottom-2 left-6 w-12 h-12 rounded-full bg-rose-200/40"></div>
+          <!-- Illustration SVG -->
+          <svg width="180" height="130" viewBox="0 0 180 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 担当者（左）: 忙しそうな人 -->
+            <circle cx="44" cy="42" r="16" fill="#FDA4AF"/>
+            <path d="M20 85 Q44 68 68 85" fill="#FDA4AF"/>
+            <!-- 作業ライン -->
+            <rect x="22" y="72" width="44" height="32" rx="6" fill="#FCA5A5" opacity="0.5"/>
+            <!-- 時計アイコン -->
+            <circle cx="44" cy="88" r="10" stroke="#DC2626" stroke-width="2" fill="white"/>
+            <path d="M44 83 L44 88 L48 91" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- 吹き出し -->
+            <rect x="62" y="20" width="80" height="34" rx="8" fill="white" stroke="#FCA5A5" stroke-width="1.5"/>
+            <path d="M70 54 L66 62 L78 54 Z" fill="white" stroke="#FCA5A5" stroke-width="1" stroke-linejoin="round"/>
+            <text x="102" y="34" text-anchor="middle" font-size="9" font-weight="700" fill="#DC2626" font-family="'Noto Sans JP', sans-serif">今は忙しいから</text>
+            <text x="102" y="47" text-anchor="middle" font-size="9" fill="#9F1239" font-family="'Noto Sans JP', sans-serif">また後で確認しよ...</text>
+            <!-- 右側: 他社が先に -->
+            <circle cx="148" cy="55" r="12" fill="#BBF7D0"/>
+            <path d="M132 90 Q148 78 164 90" fill="#BBF7D0"/>
+            <!-- チェックマーク -->
+            <circle cx="148" cy="78" r="10" fill="#16A34A"/>
+            <path d="M143 78 L147 82 L154 74" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="148" y="100" text-anchor="middle" font-size="7.5" fill="#15803D" font-weight="700" font-family="'Noto Sans JP', sans-serif">他社が内定！</text>
+            <!-- 矢印 -->
+            <path d="M80 78 L128 70" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr1)"/>
+            <defs><marker id="arr1" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 Z" fill="#DC2626"/></marker></defs>
+          </svg>
+        </div>
+        <!-- Text area -->
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+              <span data-lucide="x" class="w-3 h-3 text-red-500"></span>
+            </div>
+            <span class="text-xs font-bold text-red-500 uppercase tracking-widest">応募スルー・機会損失</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2 text-base leading-snug">現場が忙しく、面接日程の確定が後回しに。<br>気づけば他社で内定していた。</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">店長・支店長への通知がメールに埋もれ、PCを開くまで平均<strong class="text-slate-700">31時間</strong>放置。その間に競合他社が動き、貴重な人材が流出し続けています。</p>
+        </div>
+      </div>
+
+      <!-- Card 2: ブラックボックス -->
+      <div class="reveal bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all group" style="transition-delay:0.1s">
+        <div class="bg-gradient-to-br from-amber-50 to-orange-100 h-44 relative flex items-center justify-center overflow-hidden">
+          <div class="absolute top-3 left-4 w-16 h-16 rounded-full bg-amber-100/60"></div>
+          <div class="absolute bottom-2 right-6 w-10 h-10 rounded-full bg-orange-200/40"></div>
+          <svg width="180" height="130" viewBox="0 0 180 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 管理画面（暗い箱） -->
+            <rect x="30" y="20" width="120" height="80" rx="8" fill="#1E293B"/>
+            <rect x="30" y="20" width="120" height="20" rx="8" fill="#334155"/>
+            <rect x="30" y="32" width="120" height="8" rx="0" fill="#334155"/>
+            <circle cx="42" cy="30" r="4" fill="#EF4444"/>
+            <circle cx="56" cy="30" r="4" fill="#F59E0B"/>
+            <circle cx="70" cy="30" r="4" fill="#22C55E"/>
+            <!-- 謎の行データ -->
+            <rect x="44" y="50" width="52" height="7" rx="3" fill="#475569"/>
+            <rect x="44" y="62" width="40" height="7" rx="3" fill="#475569"/>
+            <rect x="44" y="74" width="60" height="7" rx="3" fill="#475569"/>
+            <!-- ステータス列（全部グレー・不明） -->
+            <rect x="106" y="50" width="30" height="7" rx="3" fill="#374151"/>
+            <rect x="106" y="62" width="30" height="7" rx="3" fill="#374151"/>
+            <rect x="106" y="74" width="30" height="7" rx="3" fill="#374151"/>
+            <!-- ？マーク -->
+            <text x="121" y="57" text-anchor="middle" font-size="6" fill="#9CA3AF" font-weight="700">???</text>
+            <text x="121" y="69" text-anchor="middle" font-size="6" fill="#9CA3AF" font-weight="700">???</text>
+            <text x="121" y="81" text-anchor="middle" font-size="6" fill="#9CA3AF" font-weight="700">???</text>
+            <!-- 大きな？ -->
+            <text x="90" y="115" text-anchor="middle" font-size="26" font-weight="900" fill="#F59E0B" opacity="0.9">?</text>
+            <text x="66" y="119" text-anchor="middle" font-size="18" font-weight="900" fill="#FCD34D" opacity="0.6">?</text>
+            <text x="114" y="120" text-anchor="middle" font-size="16" font-weight="900" fill="#FCD34D" opacity="0.5">?</text>
+          </svg>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+              <span data-lucide="x" class="w-3 h-3 text-amber-500"></span>
+            </div>
+            <span class="text-xs font-bold text-amber-500 uppercase tracking-widest">進捗のブラックボックス化</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2 text-base leading-snug">面接後のステータス更新が「面倒」で放置。<br>誰が合格で誰が不合格か、管理画面が機能しない。</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">現場の記憶頼みで、入力は後回し。結果、データは空白のまま採用管理が名ばかりになっています。催促する側の本部も疲弊しています。</p>
+        </div>
+      </div>
+
+      <!-- Card 3: ターゲット外応募 -->
+      <div class="reveal bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all group" style="transition-delay:0.2s">
+        <div class="bg-gradient-to-br from-indigo-50 to-violet-100 h-44 relative flex items-center justify-center overflow-hidden">
+          <div class="absolute top-2 right-3 w-14 h-14 rounded-full bg-indigo-100/60"></div>
+          <div class="absolute bottom-3 left-4 w-10 h-10 rounded-full bg-violet-200/40"></div>
+          <svg width="180" height="130" viewBox="0 0 180 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 複数の応募者（バツ付き）-->
+            <!-- 人1 -->
+            <circle cx="35" cy="38" r="10" fill="#C7D2FE"/>
+            <path d="M18 72 Q35 60 52 72" fill="#C7D2FE"/>
+            <line x1="27" y1="56" x2="43" y2="70" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="43" y1="56" x2="27" y2="70" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- 人2 -->
+            <circle cx="72" cy="38" r="10" fill="#C7D2FE"/>
+            <path d="M55 72 Q72 60 89 72" fill="#C7D2FE"/>
+            <line x1="64" y1="56" x2="80" y2="70" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="80" y1="56" x2="64" y2="70" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- 人3 -->
+            <circle cx="109" cy="38" r="10" fill="#C7D2FE"/>
+            <path d="M92 72 Q109 60 126 72" fill="#C7D2FE"/>
+            <line x1="101" y1="56" x2="117" y2="70" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="117" y1="56" x2="101" y2="70" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- 人4（ターゲット）チェック付き -->
+            <circle cx="148" cy="38" r="12" fill="#818CF8"/>
+            <path d="M130 74 Q148 60 166 74" fill="#818CF8"/>
+            <circle cx="148" cy="62" r="10" fill="#4F46E5"/>
+            <path d="M143 62 L147 67 L154 57" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- お金が飛ぶ -->
+            <text x="28" y="92" font-size="11" fill="#6366F1" font-weight="700">¥</text>
+            <text x="62" y="95" font-size="11" fill="#6366F1" font-weight="700">¥</text>
+            <text x="98" y="93" font-size="11" fill="#6366F1" font-weight="700">¥</text>
+            <path d="M35 85 L35 102" stroke="#6366F1" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
+            <path d="M72 85 L72 102" stroke="#6366F1" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
+            <path d="M109 85 L109 102" stroke="#6366F1" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
+            <text x="90" y="118" text-anchor="middle" font-size="8" fill="#6366F1" font-weight="600" font-family="'Noto Sans JP', sans-serif">広告費が無駄に...</text>
+          </svg>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+              <span data-lucide="x" class="w-3 h-3 text-indigo-500"></span>
+            </div>
+            <span class="text-xs font-bold text-indigo-500 uppercase tracking-widest">ターゲット外応募の多発</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2 text-base leading-snug">「とりあえず応募」が多く、ミスマッチな面接ばかり。<br>面接工数も広告費も垂れ流し状態。</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">IndeedのAIに採用基準が伝わっていないため、「受かる可能性の低い層」に求人が表示され続けます。無駄な面接が現場の疲弊を招いています。</p>
+        </div>
+      </div>
+
+      <!-- Card 4: 不採用理由不明 (NEW) -->
+      <div class="reveal bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all group" style="transition-delay:0.3s">
+        <div class="bg-gradient-to-br from-slate-100 to-gray-200 h-44 relative flex items-center justify-center overflow-hidden">
+          <div class="absolute top-2 left-5 w-16 h-16 rounded-full bg-slate-200/60"></div>
+          <div class="absolute bottom-2 right-4 w-10 h-10 rounded-full bg-gray-300/50"></div>
+          <svg width="180" height="130" viewBox="0 0 180 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 担当者（考え込む） -->
+            <circle cx="60" cy="50" r="16" fill="#94A3B8"/>
+            <path d="M36 90 Q60 74 84 90" fill="#94A3B8"/>
+            <!-- 腕を組むポーズ -->
+            <rect x="40" y="76" width="40" height="8" rx="4" fill="#64748B" opacity="0.6"/>
+            <!-- 思考の吹き出し（雲型） -->
+            <circle cx="90" cy="28" r="18" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
+            <circle cx="108" cy="22" r="14" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
+            <circle cx="118" cy="35" r="12" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
+            <circle cx="106" cy="44" r="14" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
+            <circle cx="90" cy="44" r="14" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
+            <!-- 吹き出し内のテキスト -->
+            <text x="103" y="28" text-anchor="middle" font-size="8" fill="#64748B" font-family="'Noto Sans JP', sans-serif">なぜ不採用</text>
+            <text x="103" y="40" text-anchor="middle" font-size="8" fill="#64748B" font-family="'Noto Sans JP', sans-serif">にしたの...？</text>
+            <!-- 小さい点（思考の連鎖） -->
+            <circle cx="78" cy="60" r="3" fill="#CBD5E1"/>
+            <circle cx="72" cy="68" r="2" fill="#CBD5E1"/>
+            <!-- 改善できないグラフ（フラット） -->
+            <rect x="110" y="65" width="55" height="45" rx="6" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+            <text x="137" y="79" text-anchor="middle" font-size="6.5" fill="#94A3B8" font-family="'Noto Sans JP', sans-serif">改善できず...</text>
+            <path d="M116 100 L130 100 L140 100 L150 100 L158 100" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>
+            <path d="M116 95 L120 93 L124 92 L128 91" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+            <circle cx="116" cy="100" r="2" fill="#94A3B8"/>
+            <circle cx="158" cy="100" r="2" fill="#94A3B8"/>
+          </svg>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
+              <span data-lucide="x" class="w-3 h-3 text-slate-500"></span>
+            </div>
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">不採用理由が闇の中</span>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2 text-base leading-snug">「条件が合わない」だけで終わり。<br>なぜ不採用にしたか分からず、次の改善に活かせない。</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">不採用理由が曖昧なまま蓄積されず、求人原稿の改善も面接基準の見直しも手つかず。<strong class="text-slate-700">同じミスマッチを延々と繰り返す</strong>負のループから抜け出せません。</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- まとめ -->
+    <div class="reveal mt-10 bg-slate-900 rounded-2xl p-7 flex flex-col md:flex-row items-center gap-6">
+      <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
+        <span data-lucide="alert-circle" class="w-6 h-6 text-red-400"></span>
+      </div>
+      <div>
+        <p class="text-white font-semibold text-base mb-1">これらの原因は、すべて共通しています。</p>
+        <p class="text-slate-400 text-sm leading-relaxed">
+          <strong class="text-amber-400">「現場の入力漏れ」</strong>と<strong class="text-indigo-400">「媒体とデータの分断」</strong>。この2つを同時に解決しない限り、採用コストは下がりません。
         </p>
       </div>
-      <div class="why-list">
-        <div class="why-item">
-          <div class="why-item-icon">&#x1F4F1;</div>
-          <div class="why-item-text">
-            <strong>SMS自動催促で「入力しない問題」を根絶</strong>
-            担当者が動かなくても、システムが動き続けます。
+      <a href="#architecture" class="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-500 transition-colors whitespace-nowrap">
+        解決策を見る
+        <span data-lucide="arrow-right" class="w-4 h-4"></span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ================================================
+     3. ARCHITECTURE
+================================================ -->
+<section class="py-28 bg-slate-50" id="architecture">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-20 reveal">
+      <div class="badge bg-indigo-50 text-indigo-600 border border-indigo-100 mb-4">
+        <span data-lucide="cpu" class="w-3 h-3"></span>
+        ARCHITECTURE
+      </div>
+      <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-4">
+        コボットの裏側で、<br>2つのエンジンが自動で回る。
+      </h2>
+      <p class="text-slate-500 max-w-lg mx-auto">
+        応募が発生した瞬間から、「守り」と「攻め」の自動化シナリオが静かに、確実に動き出します。
+      </p>
+    </div>
+
+    <!-- Steps: Horizontal on desktop, vertical on mobile -->
+    <div class="relative">
+      <!-- Desktop connector line -->
+      <div class="hidden lg:block absolute top-7 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-indigo-200 via-indigo-400 to-emerald-400"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+        <!-- STEP 1: Trigger -->
+        <div class="reveal flex flex-col items-center text-center">
+          <div class="relative mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-white border-2 border-indigo-200 flex items-center justify-center shadow-sm z-10 relative">
+              <span data-lucide="radio" class="w-6 h-6 text-indigo-600"></span>
+            </div>
+            <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">1</div>
+          </div>
+          <div class="inline-block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-2 py-0.5 bg-slate-100 rounded">TRIGGER</div>
+          <h3 class="font-bold text-slate-900 mb-2 text-base">応募発生</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Indeed / AirWork 等から応募が入ると、コボットが即時受信。ここからエンジンが起動します。</p>
+        </div>
+
+        <!-- STEP 2: 守り Action -->
+        <div class="reveal flex flex-col items-center text-center" style="transition-delay:0.12s">
+          <div class="relative mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-200 z-10 relative">
+              <span data-lucide="message-square" class="w-6 h-6 text-white"></span>
+            </div>
+            <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-800 text-white text-xs font-bold flex items-center justify-center">2</div>
+          </div>
+          <div class="inline-block text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2 px-2 py-0.5 bg-indigo-50 rounded border border-indigo-100">ACTION — 守り</div>
+          <h3 class="font-bold text-slate-900 mb-2 text-base">3時間未対応→SMS発火</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">担当者のスマホへSMSを自動送信。「1タップで面接枠を確保」でき、PCを開く必要はありません。</p>
+          <div class="mt-3 flex items-center gap-1.5 text-xs text-indigo-600 font-semibold">
+            <span data-lucide="smartphone" class="w-3 h-3"></span>
+            平均2時間で面接確定
           </div>
         </div>
-        <div class="why-item">
-          <div class="why-item-icon">&#x1F517;</div>
-          <div class="why-item-text">
-            <strong>Indeed連携は代行設定・完全自動</strong>
-            面倒な設定は一切不要。データ連携まで全て対応します。
+
+        <!-- STEP 3: 攻め Sync -->
+        <div class="reveal flex flex-col items-center text-center" style="transition-delay:0.24s">
+          <div class="relative mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-md shadow-emerald-200 z-10 relative">
+              <span data-lucide="arrow-left-right" class="w-6 h-6 text-white"></span>
+            </div>
+            <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-800 text-white text-xs font-bold flex items-center justify-center">3</div>
+          </div>
+          <div class="inline-block text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2 px-2 py-0.5 bg-emerald-50 rounded border border-emerald-100">SYNC — 攻め</div>
+          <h3 class="font-bold text-slate-900 mb-2 text-base">採否データをIndeedへ連携</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">面接完了後、入力された採否データをIndeed Disposition Syncへ連携。入力催促SMSで100%データ回収を目指します。</p>
+          <div class="mt-3 flex items-center gap-1.5 text-xs text-emerald-600 font-semibold">
+            <span data-lucide="database" class="w-3 h-3"></span>
+            入力漏れをゼロに
           </div>
         </div>
-        <div class="why-item">
-          <div class="why-item-icon">&#x1F4DD;</div>
-          <div class="why-item-text">
-            <strong>データ活用によるコンサルティング伴走</strong>
-            不採用理由から求人原稿・面接マニュアルを改善し続けます。
+
+        <!-- STEP 4: Evolution -->
+        <div class="reveal flex flex-col items-center text-center" style="transition-delay:0.36s">
+          <div class="relative mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-white border-2 border-emerald-300 flex items-center justify-center shadow-sm z-10 relative">
+              <span data-lucide="sparkles" class="w-6 h-6 text-emerald-600"></span>
+            </div>
+            <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">4</div>
+          </div>
+          <div class="inline-block text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2 px-2 py-0.5 bg-emerald-50 rounded">EVOLUTION</div>
+          <h3 class="font-bold text-slate-900 mb-2 text-base">Indeed AIが再学習→有効応募率UP</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">IndeedのAIが「採用ターゲット」を再学習。次回から欲しい人材に優先表示され、CPA（採用単価）が下がり続けます。</p>
+          <div class="mt-3 flex items-center gap-1.5 text-xs text-emerald-600 font-semibold">
+            <span data-lucide="refresh-cw" class="w-3 h-3"></span>
+            やるたびに精度が上がる
           </div>
         </div>
-        <div class="why-item">
-          <div class="why-item-icon">&#x1F4C8;</div>
-          <div class="why-item-text">
-            <strong>毎月の改善PDCAで採用力が複利で伸び続ける</strong>
-            月次レポートと改善ミーティングで成果を最大化します。
+
+      </div>
+    </div>
+
+    <!-- Loop explanation -->
+    <div class="mt-16 reveal">
+      <div class="bg-gradient-to-r from-indigo-600 to-emerald-600 rounded-2xl p-8 text-white flex flex-col md:flex-row items-center gap-8">
+        <div class="flex-1">
+          <div class="text-xs font-bold uppercase tracking-widest text-white/70 mb-2">FEEDBACK LOOP</div>
+          <h3 class="text-xl font-bold mb-2">採否データが「次の集客」を自動改善する</h3>
+          <p class="text-white/80 text-sm leading-relaxed">一般的なシステムは「管理して終わり」。本パッケージは蓄積した採否データをIndeedにフィードバックし、使えば使うほど有効応募率が向上する<strong class="text-white">学習型エコシステム</strong>を実現します。</p>
+        </div>
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <div class="text-center">
+            <div class="text-3xl font-black">3.1<span class="text-xl">倍</span></div>
+            <div class="text-xs text-white/70 mt-1">有効応募率</div>
+          </div>
+          <div class="text-white/40 text-2xl font-thin">|</div>
+          <div class="text-center">
+            <div class="text-3xl font-black">2.1<span class="text-xl">倍</span></div>
+            <div class="text-xs text-white/70 mt-1">応募数</div>
+          </div>
+          <div class="text-white/40 text-2xl font-thin">|</div>
+          <div class="text-center">
+            <div class="text-3xl font-black">+30<span class="text-xl">%</span></div>
+            <div class="text-xs text-white/70 mt-1">採用成果</div>
           </div>
         </div>
       </div>
@@ -1192,116 +940,628 @@
   </div>
 </section>
 
-<!-- ===== 8. STEPS ===== -->
-<section class="section steps" id="steps">
-  <div class="container">
-    <span class="section-tag steps-tag">&#x1F680; ONBOARDING</span>
-    <h2 class="section-title">導入フロー</h2>
-    <div class="divider"></div>
-    <p class="section-lead">最短2週間で稼働開始。貴社の負担を最小限に、導入から運用まで全て伴走します。</p>
-    <div class="steps-list">
-      <div class="step-item">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <div class="step-title">無料・歩留まり診断 <span class="ribbon">無料</span></div>
-          <div class="step-desc">現在のコボットのデータから、<strong>どこで求職者が漏れているか</strong>を特定します。課題箇所を可視化し、改善余地と概算コスト削減効果をご提示します。</div>
+
+<!-- ================================================
+     4. COMPARISON TABLE
+================================================ -->
+<section class="py-28 bg-white" id="comparison">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="badge bg-slate-100 text-slate-600 border border-slate-200 mb-4">
+        <span data-lucide="columns" class="w-3 h-3"></span>
+        BEFORE / AFTER
+      </div>
+      <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-4">
+        導入前後で、オペレーションが<br>これだけ変わる。
+      </h2>
+    </div>
+
+    <div class="reveal overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+      <table class="w-full compare-table">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200">
+            <th class="text-left text-sm text-slate-500 font-semibold w-1/4">比較項目</th>
+            <th class="text-center text-sm text-slate-400 font-semibold w-[37.5%]">
+              <div class="inline-flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                導入前（人力運用）
+              </div>
+            </th>
+            <th class="text-center text-sm text-indigo-600 font-semibold w-[37.5%] bg-indigo-50/40">
+              <div class="inline-flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                導入後（本パッケージ）
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="text-sm divide-y divide-slate-100">
+          <tr>
+            <td class="font-semibold text-slate-700 py-4">
+              <div class="flex items-center gap-2">
+                <span data-lucide="calendar" class="w-4 h-4 text-slate-400"></span>
+                面接設定
+              </div>
+            </td>
+            <td class="text-center text-slate-500 py-4">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-medium">
+                <span data-lucide="x" class="w-3 h-3"></span>
+                現場がPCを開くまで放置（平均31時間）
+              </span>
+            </td>
+            <td class="text-center py-4 bg-indigo-50/20">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium">
+                <span data-lucide="check" class="w-3 h-3"></span>
+                SMSから即レス（最短2時間）
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="font-semibold text-slate-700 py-4">
+              <div class="flex items-center gap-2">
+                <span data-lucide="database" class="w-4 h-4 text-slate-400"></span>
+                データ精度
+              </div>
+            </td>
+            <td class="text-center text-slate-500 py-4">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-medium">
+                <span data-lucide="x" class="w-3 h-3"></span>
+                現場の記憶頼み（更新漏れ多発）
+              </span>
+            </td>
+            <td class="text-center py-4 bg-indigo-50/20">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium">
+                <span data-lucide="check" class="w-3 h-3"></span>
+                リマインド機能で100%回収
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="font-semibold text-slate-700 py-4">
+              <div class="flex items-center gap-2">
+                <span data-lucide="bar-chart-2" class="w-4 h-4 text-slate-400"></span>
+                Indeed運用
+              </div>
+            </td>
+            <td class="text-center text-slate-500 py-4">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-medium">
+                <span data-lucide="minus" class="w-3 h-3"></span>
+                応募数を追うだけの「バラ撒き」
+              </span>
+            </td>
+            <td class="text-center py-4 bg-indigo-50/20">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-medium">
+                <span data-lucide="check" class="w-3 h-3"></span>
+                採否をAIが学習する「高精度ターゲティング」
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="font-semibold text-slate-700 py-4">
+              <div class="flex items-center gap-2">
+                <span data-lucide="credit-card" class="w-4 h-4 text-slate-400"></span>
+                採用コスト
+              </div>
+            </td>
+            <td class="text-center text-slate-500 py-4">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-medium">
+                <span data-lucide="x" class="w-3 h-3"></span>
+                ターゲット外の応募にも課金
+              </span>
+            </td>
+            <td class="text-center py-4 bg-indigo-50/20">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-medium">
+                <span data-lucide="check" class="w-3 h-3"></span>
+                有効応募に予算を集中（CPA削減）
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="font-semibold text-slate-700 py-4">
+              <div class="flex items-center gap-2">
+                <span data-lucide="user-check" class="w-4 h-4 text-slate-400"></span>
+                面接設定率
+              </div>
+            </td>
+            <td class="text-center text-slate-500 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <div class="h-2 w-20 bg-slate-200 rounded-full overflow-hidden">
+                  <div class="h-full bg-red-400 rounded-full" style="width:36%"></div>
+                </div>
+                <span class="text-xs font-bold text-red-500">36%</span>
+              </div>
+            </td>
+            <td class="text-center py-4 bg-indigo-50/20">
+              <div class="flex items-center justify-center gap-2">
+                <div class="h-2 w-20 bg-slate-200 rounded-full overflow-hidden">
+                  <div class="h-full bg-indigo-500 rounded-full" style="width:62%"></div>
+                </div>
+                <span class="text-xs font-bold text-indigo-600">60%超</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     5. SOCIAL PROOF
+================================================ -->
+<section class="py-28 bg-slate-50" id="proof">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="badge bg-amber-50 text-amber-600 border border-amber-100 mb-4">
+        <span data-lucide="bar-chart" class="w-3 h-3"></span>
+        EVIDENCE
+      </div>
+      <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-4">
+        数字が証明する、導入効果。
+      </h2>
+      <p class="text-slate-500 max-w-md mx-auto">Indeed公式データと実導入事例が、その実力を示しています。</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8 mb-10">
+      <!-- Bar Chart -->
+      <div class="reveal bg-white rounded-2xl p-7 border border-slate-100 shadow-sm">
+        <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Indeed 公式データ</div>
+        <h3 class="font-bold text-slate-900 mb-1">採否データ共有による集客力の変化</h3>
+        <p class="text-xs text-slate-400 mb-6">ステータスを正確に連携している企業 vs 未連携企業の比較</p>
+        <div class="h-56">
+          <canvas id="barChart"></canvas>
         </div>
       </div>
-      <div class="step-item">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <div class="step-title">自動化シナリオの設計</div>
-          <div class="step-desc">貴社の課題に合わせ、<strong>SMSアラートの送信条件やタイミング</strong>を設計します。業種・職種・採用スピード感に合わせたカスタマイズが可能です。</div>
+
+      <!-- Line Chart -->
+      <div class="reveal bg-white rounded-2xl p-7 border border-slate-100 shadow-sm" style="transition-delay:0.1s">
+        <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">導入事例：日の出運輸様</div>
+        <h3 class="font-bold text-slate-900 mb-1">面接確定リードタイムの推移</h3>
+        <p class="text-xs text-slate-400 mb-6">SMS通知機能の導入前後（時間）</p>
+        <div class="h-56">
+          <canvas id="lineChart"></canvas>
         </div>
       </div>
-      <div class="step-item">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <div class="step-title">システム実装・Indeed連携</div>
-          <div class="step-desc">面接コボットの設定変更、SMS連携、<strong>Indeedへの採否データ連携設定を代行</strong>します。貴社の作業は最小限です。</div>
-        </div>
+    </div>
+
+    <!-- Testimonial -->
+    <div class="reveal bg-white rounded-2xl p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row gap-6 items-start">
+      <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+        <span data-lucide="quote" class="w-6 h-6 text-indigo-500"></span>
       </div>
-      <div class="step-item">
-        <div class="step-number">4</div>
-        <div class="step-content">
-          <div class="step-title">運用・改善ミーティング（月次）</div>
-          <div class="step-desc">蓄積されたデータをもとに、<strong>毎月の採用改善PDCAを共に回します。</strong>不採用理由の分析から求人原稿の改善提案まで、採用のプロが伴走します。</div>
+      <div>
+        <p class="text-slate-700 leading-relaxed mb-4 text-base">
+          「入力するだけでIndeedが賢くなる。このメリットが現場に伝わってから、<strong>店長たちの協力体制が劇的に変わりました。</strong>以前は『また入力か』という空気でしたが、今では自分たちから入力してくれるようになっています。」
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500">H</div>
+          <div>
+            <div class="text-sm font-semibold text-slate-900">採用担当 H様</div>
+            <div class="text-xs text-slate-400">物流企業（日の出運輸）/ 従業員数300名規模</div>
+          </div>
+          <div class="ml-auto flex gap-1">
+            <span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== 9. FINAL CTA ===== -->
-<section class="final-cta" id="cta">
-  <div class="container">
-    <h2 class="final-cta-title">
-      「採用ステータス」を入力するだけで、<br>
-      応募数は<em>2倍</em>にできる。
+
+<!-- ================================================
+     6. VALUE PROPOSITION
+================================================ -->
+<section class="py-28 bg-white" id="value">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="badge bg-indigo-50 text-indigo-600 border border-indigo-100 mb-4">
+        <span data-lucide="shield" class="w-3 h-3"></span>
+        WHY US
+      </div>
+      <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-4">
+        私たちが選ばれる2つの理由
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="reveal bg-slate-50 rounded-2xl p-8 border border-slate-100">
+        <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center mb-6">
+          <span data-lucide="settings-2" class="w-6 h-6 text-white"></span>
+        </div>
+        <div class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">「仕組み化」のプロ</div>
+        <h3 class="text-xl font-bold text-slate-900 mb-4">現場が動く「シナリオ」まで設計して納品</h3>
+        <p class="text-slate-500 text-sm leading-relaxed mb-5">
+          単なるシステム提供で終わりません。SMSの文言・送信タイミング・不採用理由の選択肢設計まで、<strong class="text-slate-700">「現場が入力したくなる仕組み」</strong>を一緒に構築します。
+        </p>
+        <ul class="space-y-2 text-sm text-slate-600">
+          <li class="flex items-start gap-2"><span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>SMSシナリオ設計（文言・タイミング）</li>
+          <li class="flex items-start gap-2"><span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>不採用理由の体系化と求人原稿改善</li>
+          <li class="flex items-start gap-2"><span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>月次改善PDCAの伴走サポート</li>
+        </ul>
+      </div>
+
+      <div class="reveal bg-slate-50 rounded-2xl p-8 border border-slate-100" style="transition-delay:0.1s">
+        <div class="w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center mb-6">
+          <span data-lucide="brain-circuit" class="w-6 h-6 text-white"></span>
+        </div>
+        <div class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-3">Indeed連携の先行知見</div>
+        <h3 class="text-xl font-bold text-slate-900 mb-4">採否データ活用における独自ノウハウ</h3>
+        <p class="text-slate-500 text-sm leading-relaxed mb-5">
+          Indeed Disposition Syncを実務で活用しているパートナーとして、<strong class="text-slate-700">「何を入力すればAIが最も賢くなるか」</strong>という独自のデータ知見を蓄積しています。
+        </p>
+        <ul class="space-y-2 text-sm text-slate-600">
+          <li class="flex items-start gap-2"><span data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></span>Indeed連携設定を完全代行</li>
+          <li class="flex items-start gap-2"><span data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></span>AIが学習しやすい「不採用理由の粒度」を設計</li>
+          <li class="flex items-start gap-2"><span data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></span>有効応募率・CPA改善まで継続サポート</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     7. PRICING
+================================================ -->
+<section class="py-24 bg-slate-50" id="pricing">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="badge bg-indigo-50 text-indigo-600 border border-indigo-100 mb-4">
+        <span data-lucide="package" class="w-3 h-3"></span>
+        PRICING
+      </div>
+      <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-4">
+        シンプルな2プラン構成
+      </h2>
+      <p class="text-slate-500 max-w-md mx-auto text-sm">解約違約金なし。まずは最低3ヶ月で効果を確かめてください。</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 items-start">
+
+      <!-- Plan 1: Standard -->
+      <div class="reveal bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+        <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">STANDARD</div>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">面接コボット基本プラン</h3>
+        <p class="text-sm text-slate-500 mb-6">応募対応の自動化とステータス管理</p>
+        <div class="flex items-baseline gap-1 mb-8">
+          <span class="text-4xl font-black text-slate-900">¥50,000</span>
+          <span class="text-slate-500 text-sm">/月</span>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-slate-600">
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            3時間未対応→SMS自動発火
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            面接ステータス自動回収（催促リマインド）
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            不採用理由の収集・体系化
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            月次改善レポート
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0"></span>
+            SMSシナリオ設計サポート（初回）
+          </li>
+        </ul>
+        <a href="#cta" class="block text-center px-6 py-3 border-2 border-indigo-600 text-indigo-600 rounded-xl font-semibold text-sm hover:bg-indigo-50 transition-colors">
+          まず相談する
+        </a>
+      </div>
+
+      <!-- Plan 2: Growth (Recommended) -->
+      <div class="reveal bg-indigo-600 rounded-2xl p-8 border border-indigo-500 shadow-lg shadow-indigo-200 relative overflow-hidden" style="transition-delay:0.1s">
+        <!-- Popular badge -->
+        <div class="absolute top-5 right-5 bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">おすすめ</div>
+        <div class="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-3">GROWTH</div>
+        <h3 class="text-xl font-bold text-white mb-2">コボット + Disposition Sync</h3>
+        <p class="text-sm text-indigo-200 mb-6">Indeed AIを活用した採用最適化まで</p>
+        <div class="flex items-baseline gap-1 mb-8">
+          <span class="text-4xl font-black text-white">¥70,000</span>
+          <span class="text-indigo-200 text-sm">/月</span>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-indigo-100">
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            STANDARDの全機能
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            Indeed Disposition Sync連携設定（代行）
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            採否データのIndeed送信管理
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            有効応募率・CPA改善レポート
+          </li>
+          <li class="flex items-start gap-2">
+            <span data-lucide="check-circle-2" class="w-4 h-4 text-indigo-200 mt-0.5 flex-shrink-0"></span>
+            月次改善PDCA伴走サポート
+          </li>
+        </ul>
+        <a href="#cta" class="block text-center px-6 py-3 bg-white text-indigo-600 rounded-xl font-bold text-sm hover:bg-indigo-50 transition-colors">
+          無料診断を申し込む
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Options note -->
+    <div class="reveal mt-8 bg-white rounded-xl p-5 border border-slate-200 text-sm text-slate-500 text-center">
+      <span class="font-semibold text-slate-700">オプション追加可能：</span>
+      Indeed / Instagram広告運用代行（広告費×20%）&nbsp;|&nbsp;
+      RPO採用代行（¥150,000+/月）&nbsp;|&nbsp;
+      採用HP制作（¥1,000,000〜）
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     8. FAQ
+================================================ -->
+<section class="py-24 bg-white" id="faq">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-12 reveal">
+      <div class="badge bg-slate-100 text-slate-600 border border-slate-200 mb-4">
+        <span data-lucide="help-circle" class="w-3 h-3"></span>
+        FAQ
+      </div>
+      <h2 class="text-3xl font-black tracking-tight text-slate-900">よくある質問</h2>
+    </div>
+
+    <div class="space-y-3 reveal">
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">既存の採用管理システムとの連携はできますか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          AirWork、Engage、ジョブオプ等の主要ATSとの連携実績があります。現在お使いのシステムを事前にお知らせいただければ、接続可否を確認いたします。
+        </div>
+      </details>
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">現場（店長・支店長）にアプリや登録は必要ですか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          不要です。現場担当者へはSMSで通知が届き、スマートフォンのブラウザから1タップで面接枠確保・ステータス入力が完結します。アプリインストールや会員登録は一切不要なため、現場への展開が簡単です。
+        </div>
+      </details>
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">導入までどれくらいの期間がかかりますか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          最短2週間で稼働開始できます。初回のヒアリング〜SMSシナリオ設計〜テスト送信〜本番稼働までを弊社が一貫して対応します。
+        </div>
+      </details>
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">Indeed Disposition Syncとはどんな機能ですか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          採用・不採用などの選考結果（Disposition）をIndeedのAIに送信（Sync）する機能です。データを受け取ったIndeedのAIは「この企業がどんな人材を求めているか」を学習し、次回以降の求人表示精度を高めます。結果として有効応募率の向上・採用単価（CPA）の削減につながります。
+        </div>
+      </details>
+
+      <details class="faq-item bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+        <summary class="flex items-center justify-between p-5 gap-4">
+          <span class="font-semibold text-slate-800 text-sm">効果が出なかった場合、途中解約できますか？</span>
+          <span data-lucide="plus" class="faq-icon w-4 h-4 text-slate-400 flex-shrink-0"></span>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-4">
+          最低契約期間3ヶ月以降は、1ヶ月前通知でいつでも解約できます。解約違約金はありません。ただし、Indeed AIの学習には一定のデータ蓄積が必要なため、3〜6ヶ月での継続をおすすめしています。
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================
+     9. CLOSING CTA
+================================================ -->
+<section class="py-28 bg-slate-900" id="cta">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <div class="badge bg-white/10 text-white/70 border border-white/10 mb-8">
+      <span data-lucide="rocket" class="w-3 h-3"></span>
+      無料診断
+    </div>
+    <h2 class="text-3xl lg:text-4xl font-black text-white leading-tight mb-6">
+      採用ステータスを入力するだけで、<br>
+      <span class="text-indigo-400">応募の質が自動で上がり続ける。</span>
     </h2>
-    <p class="final-cta-sub">
-      現場の負担を極限まで減らし、無駄な広告費を削り、定着する人材だけを確実に採用する。<br>
-      そんな「攻めと守り」が連動する採用オペレーションを構築しませんか？<br><br>
-      まずは貴社の現在の「歩留まりの詰まり」と「コスト削減余地」を無料診断いたします。
+    <p class="text-slate-400 leading-relaxed mb-10 text-base max-w-xl mx-auto">
+      面接後の「採否データ」をIndeedに共有するだけで、AIが自社の採用基準を学習。<br>
+      次回からターゲットに合った応募者だけが集まるようになります。<br>
+      まずは貴社の「歩留まりの詰まり」と「改善余地」を無料で診断します。
     </p>
-    <div class="final-cta-btns">
-      <a href="#" class="btn btn-primary" style="font-size:16px;padding:20px 40px;">
-        &#x1F4CB;&nbsp; 無料・歩留まり診断を申し込む
-      </a>
-      <a href="#" class="btn btn-outline" style="font-size:15px;padding:20px 36px;">
-        &#x1F4C4;&nbsp; メリットがすぐわかるサービス資料をダウンロード
-      </a>
+
+    <!-- HubSpot フォーム埋め込み -->
+    <div class="bg-white rounded-2xl p-8 text-left max-w-xl mx-auto mb-12">
+      <script src="https://js-na2.hsforms.net/forms/embed/47217764.js" defer></script>
+      <div class="hs-form-frame" data-region="na2" data-form-id="38d2997d-540b-4855-ac9a-1fec52d00481" data-portal-id="47217764"></div>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+      <div class="flex items-center gap-2">
+        <span data-lucide="clock" class="w-4 h-4"></span>
+        3分で申し込み完了
+      </div>
+      <div class="flex items-center gap-2">
+        <span data-lucide="shield-check" class="w-4 h-4"></span>
+        費用・営業電話は一切なし
+      </div>
+      <div class="flex items-center gap-2">
+        <span data-lucide="calendar-check" class="w-4 h-4"></span>
+        最短翌営業日に結果をご報告
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
-<footer>
-  <div class="container">
-    <p>&copy; 2025 面接コボット自動化 &times; Indeed連携パッケージ　|　採用エコシステム構築支援</p>
-    <p style="margin-top:8px;">&#x203B; 記載の数値はIndeed社公式データおよび実導入事例に基づきます。</p>
+
+<!-- FOOTER -->
+<footer class="bg-slate-950 py-10 text-center text-slate-600 text-xs">
+  <div class="max-w-6xl mx-auto px-6">
+    <p class="mb-2">© 2026 面接コボット自動化 × Indeed連携パッケージ　採用エコシステム構築支援</p>
+    <p>※ 記載の数値はIndeed社公式データおよび実導入事例に基づきます。効果は企業によって異なります。</p>
   </div>
 </footer>
 
+
 <script>
-  // Mermaid init
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'base',
-    themeVariables: {
-      primaryColor: '#E3F2FD',
-      primaryTextColor: '#0D47A1',
-      primaryBorderColor: '#1565C0',
-      lineColor: '#1565C0',
-      secondaryColor: '#FFF8E1',
-      tertiaryColor: '#E8F5E9',
-      background: '#ffffff',
-      fontSize: '13px'
+  // === Lucide Icons ===
+  lucide.createIcons();
+
+  // === Charts ===
+  const indigo = '#4F46E5';
+  const emerald = '#059669';
+  const slate = '#94A3B8';
+  const indigoPale = '#EEF2FF';
+
+  // Bar Chart
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['応募数', '有効応募率', '採用パフォーマンス'],
+      datasets: [
+        {
+          label: '未連携',
+          data: [100, 100, 100],
+          backgroundColor: '#E2E8F0',
+          borderRadius: 6,
+          borderSkipped: false,
+        },
+        {
+          label: 'データ連携済み',
+          data: [210, 310, 130],
+          backgroundColor: indigo,
+          borderRadius: 6,
+          borderSkipped: false,
+        }
+      ]
     },
-    flowchart: {
-      curve: 'basis',
-      padding: 20
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 11 }, padding: 12 } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 360,
+          ticks: {
+            callback: v => v + '%',
+            font: { size: 11 }
+          },
+          grid: { color: '#F1F5F9' }
+        },
+        x: {
+          ticks: { font: { size: 10 } },
+          grid: { display: false }
+        }
+      }
     }
   });
 
-  // Scroll reveal
+  // Line Chart
+  const lineCtx = document.getElementById('lineChart').getContext('2d');
+  new Chart(lineCtx, {
+    type: 'line',
+    data: {
+      labels: ['導入前', '導入1ヶ月目', '2ヶ月目', '3ヶ月目', '4ヶ月目', '5ヶ月目'],
+      datasets: [{
+        label: 'リードタイム（時間）',
+        data: [31, 22, 16, 12, 8, 6],
+        borderColor: indigo,
+        backgroundColor: indigoPale,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: indigo,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ` リードタイム: ${ctx.parsed.y}時間`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          min: 0,
+          max: 35,
+          ticks: {
+            callback: v => v + 'h',
+            font: { size: 11 }
+          },
+          grid: { color: '#F1F5F9' }
+        },
+        x: {
+          ticks: { font: { size: 10 } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+  // === Scroll Reveal ===
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
+        entry.target.classList.add('visible');
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.1 });
 
-  document.querySelectorAll('.pain-card, .feature-col, .evidence-card, .why-box, .step-item, .flow-col, .flow-loop-banner').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(28px)';
-    el.style.transition = 'opacity .6s ease, transform .6s ease';
-    observer.observe(el);
-  });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // === ハッシュナビゲーション：ページ読み込み後に正確な位置へ再スクロール ===
+  if (window.location.hash) {
+    const target = document.querySelector(window.location.hash);
+    if (target) {
+      // reveal アニメーションが落ち着いた後にスクロール
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+  }
 </script>
-
 </body>
 </html>
