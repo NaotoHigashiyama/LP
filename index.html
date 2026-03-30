@@ -285,109 +285,98 @@
 
       <!-- Right: Animated Network SVG -->
       <div class="relative flex items-center justify-center hidden lg:flex">
-        <svg viewBox="0 0 500 320" class="w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 500 278" class="w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="glowCenter" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.14"/>
+              <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.15"/>
               <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
             </radialGradient>
-            <filter id="blur"><feGaussianBlur stdDeviation="12"/></filter>
-            <marker id="arr-indigo" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-              <path d="M0,0.5 L0,8.5 L8,4.5 z" fill="#4F46E5"/>
+            <filter id="sfBlur"><feGaussianBlur stdDeviation="11"/></filter>
+            <!-- Arrow markers -->
+            <marker id="arr-ind" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+              <path d="M0,0.5 L0,7.5 L7,4 z" fill="#4F46E5"/>
             </marker>
-            <marker id="arr-green" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-              <path d="M0,0.5 L0,8.5 L8,4.5 z" fill="#059669"/>
+            <marker id="arr-grn" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+              <path d="M0,0.5 L0,7.5 L7,4 z" fill="#059669"/>
             </marker>
-            <marker id="arr-slate" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-              <path d="M0,0.5 L0,8.5 L8,4.5 z" fill="#94A3B8"/>
-            </marker>
+            <!-- TextPath guides (invisible — text only) -->
+            <path id="tp1" d="M138,105 L206,162"/>
+            <path id="tp2" d="M294,162 L362,105"/>
           </defs>
 
-          <!-- Glow -->
-          <circle cx="250" cy="158" r="80" fill="url(#glowCenter)" filter="url(#blur)"/>
+          <!-- Glow behind center -->
+          <circle cx="250" cy="196" r="78" fill="url(#glowCenter)" filter="url(#sfBlur)"/>
 
-          <!-- PULSE RINGS（中心ノードから外へ広がる） -->
-          <circle cx="250" cy="158" r="62" stroke="#4F46E5" stroke-width="1.5" fill="none" opacity="0.22" class="pulse-ring"/>
-          <circle cx="250" cy="158" r="62" stroke="#4F46E5" stroke-width="1.5" fill="none" opacity="0.12" class="pulse-ring" style="animation-delay:1s"/>
+          <!-- PULSE RINGS (radiating outward from center) -->
+          <circle cx="250" cy="196" r="62" stroke="#4F46E5" stroke-width="1.5" fill="none" opacity="0.22" class="pulse-ring"/>
+          <circle cx="250" cy="196" r="62" stroke="#4F46E5" stroke-width="1.5" fill="none" opacity="0.12" class="pulse-ring" style="animation-delay:1s"/>
 
-          <!-- ═══ FLOW 1: コボット → 現場担当者（上アーク：リマインド送信） ═══ -->
-          <!-- 静的ベースライン -->
-          <path d="M196,145 Q159,82 124,145" stroke="#C7D2FE" stroke-width="1.5" fill="none"/>
-          <!-- アニメーション流線 + 矢印 -->
-          <path d="M196,145 Q159,82 124,145" stroke="#4F46E5" stroke-width="2.2" fill="none"
-                class="flow-line" opacity="0.9" marker-end="url(#arr-indigo)"/>
-          <!-- ラベル -->
-          <rect x="113" y="66" width="132" height="22" rx="11" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1"/>
-          <text x="179" y="81" text-anchor="middle" font-size="10" font-weight="700"
-                fill="#4338CA" font-family="'Noto Sans JP', sans-serif">ステータス更新リマインド</text>
+          <!-- ══ FLOW 1: コボット → 現場担当者 (ステータス更新リマインド) ══ -->
+          <!-- Base line (light, always visible) -->
+          <line x1="207" y1="163" x2="140" y2="106" stroke="#C7D2FE" stroke-width="1.5"/>
+          <!-- Animated dash line + arrowhead -->
+          <line x1="207" y1="163" x2="137" y2="104" stroke="#4F46E5" stroke-width="2.5"
+                class="flow-line" opacity="0.9" marker-end="url(#arr-ind)"/>
+          <!-- Label riding on path (white halo layer) -->
+          <text font-size="9.5" stroke="white" stroke-width="4" stroke-linejoin="round" fill="white">
+            <textPath href="#tp1" startOffset="50%" text-anchor="middle">ステータス更新リマインド</textPath>
+          </text>
+          <!-- Label riding on path (colored text layer) -->
+          <text font-size="9.5" font-weight="700" fill="#4338CA" font-family="'Noto Sans JP', sans-serif">
+            <textPath href="#tp1" startOffset="50%" text-anchor="middle">ステータス更新リマインド</textPath>
+          </text>
 
-          <!-- ═══ FLOW 2: 現場担当者 → コボット（下アーク：採否データ入力） ═══ -->
-          <path d="M124,172 Q159,232 196,172" stroke="#E2E8F0" stroke-width="1.5" fill="none"/>
-          <path d="M124,172 Q159,232 196,172" stroke="#94A3B8" stroke-width="2" fill="none"
-                stroke-dasharray="5 4" class="flow-line flow-line-2" opacity="0.75" marker-end="url(#arr-slate)"/>
-          <!-- ラベル -->
-          <rect x="113" y="234" width="112" height="22" rx="11" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
-          <text x="169" y="249" text-anchor="middle" font-size="10" font-weight="600"
-                fill="#64748B" font-family="'Noto Sans JP', sans-serif">採否データ入力</text>
+          <!-- ══ FLOW 2: コボット → Indeed (採否データ自動連携) ══ -->
+          <line x1="293" y1="163" x2="360" y2="106" stroke="#D1FAE5" stroke-width="1.5"/>
+          <line x1="293" y1="163" x2="363" y2="104" stroke="#059669" stroke-width="2.5"
+                class="flow-line flow-line-2" opacity="0.9" marker-end="url(#arr-grn)"/>
+          <text font-size="9.5" stroke="white" stroke-width="4" stroke-linejoin="round" fill="white">
+            <textPath href="#tp2" startOffset="50%" text-anchor="middle">採否データ自動連携</textPath>
+          </text>
+          <text font-size="9.5" font-weight="700" fill="#065F46" font-family="'Noto Sans JP', sans-serif">
+            <textPath href="#tp2" startOffset="50%" text-anchor="middle">採否データ自動連携</textPath>
+          </text>
 
-          <!-- ═══ FLOW 3: コボット → Indeed（水平ライン：採否連携） ═══ -->
-          <line x1="305" y1="155" x2="378" y2="155" stroke="#D1FAE5" stroke-width="1.5"/>
-          <line x1="305" y1="155" x2="374" y2="155" stroke="#059669" stroke-width="2.5"
-                class="flow-line flow-line-3" opacity="0.9" marker-end="url(#arr-green)"/>
-          <!-- ラベル -->
-          <rect x="294" y="128" width="132" height="22" rx="11" fill="#ECFDF5" stroke="#BBF7D0" stroke-width="1"/>
-          <text x="360" y="143" text-anchor="middle" font-size="10" font-weight="700"
-                fill="#065F46" font-family="'Noto Sans JP', sans-serif">採否データ自動連携</text>
-
-          <!-- ═══ CENTER NODE: 面接コボット ═══ -->
-          <circle cx="250" cy="158" r="54" fill="white" stroke="#E0E7FF" stroke-width="2"/>
-          <circle cx="250" cy="158" r="47" fill="#EEF2FF"/>
-          <rect x="232" y="141" width="36" height="28" rx="6" fill="#4F46E5"/>
-          <circle cx="244" cy="152" r="4.5" fill="white"/>
-          <circle cx="256" cy="152" r="4.5" fill="white"/>
-          <rect x="241" y="158" width="18" height="4" rx="2" fill="white" opacity="0.7"/>
-          <rect x="246" y="134" width="8" height="7" rx="2" fill="#4F46E5" stroke="#C7D2FE" stroke-width="1.5"/>
-          <circle cx="250" cy="132" r="3" fill="#818CF8"/>
-          <rect x="226" y="147" width="6" height="12" rx="3" fill="#4F46E5"/>
-          <rect x="268" y="147" width="6" height="12" rx="3" fill="#4F46E5"/>
-          <text x="250" y="226" text-anchor="middle" font-size="12" font-weight="700"
+          <!-- ══ CENTER NODE: 面接コボット ══ -->
+          <circle cx="250" cy="196" r="54" fill="white" stroke="#E0E7FF" stroke-width="2"/>
+          <circle cx="250" cy="196" r="47" fill="#EEF2FF"/>
+          <!-- Robot icon (centered on cy=196) -->
+          <rect x="232" y="179" width="36" height="28" rx="6" fill="#4F46E5"/>
+          <circle cx="244" cy="190" r="4.5" fill="white"/>
+          <circle cx="256" cy="190" r="4.5" fill="white"/>
+          <rect x="241" y="196" width="18" height="4" rx="2" fill="white" opacity="0.7"/>
+          <rect x="246" y="172" width="8" height="7" rx="2" fill="#4F46E5" stroke="#C7D2FE" stroke-width="1.5"/>
+          <circle cx="250" cy="170" r="3" fill="#818CF8"/>
+          <rect x="226" y="185" width="6" height="12" rx="3" fill="#4F46E5"/>
+          <rect x="268" y="185" width="6" height="12" rx="3" fill="#4F46E5"/>
+          <text x="250" y="264" text-anchor="middle" font-size="12" font-weight="700"
                 fill="#4338CA" font-family="'Noto Sans JP', sans-serif">面接コボット</text>
 
-          <!-- ═══ LEFT NODE: 現場担当者 ═══ -->
-          <circle cx="82" cy="158" r="40" fill="white" stroke="#E0E7FF" stroke-width="1.5"/>
-          <rect x="64" y="140" width="36" height="26" rx="5" fill="#4F46E5"/>
-          <path d="M64 166 l10 8 l-10 0 z" fill="#4F46E5"/>
-          <rect x="69" y="147" width="26" height="3" rx="1.5" fill="white" opacity="0.8"/>
-          <rect x="69" y="153" width="18" height="3" rx="1.5" fill="white" opacity="0.6"/>
-          <text x="82" y="215" text-anchor="middle" font-size="12" font-weight="700"
+          <!-- ══ TL NODE: 現場担当者 ══ -->
+          <circle cx="105" cy="80" r="38" fill="white" stroke="#E0E7FF" stroke-width="1.5"/>
+          <!-- SMS bubble icon -->
+          <rect x="87" y="62" width="36" height="26" rx="5" fill="#4F46E5"/>
+          <path d="M87 88 l10 8 l-10 0 z" fill="#4F46E5"/>
+          <rect x="92" y="69" width="26" height="3" rx="1.5" fill="white" opacity="0.8"/>
+          <rect x="92" y="75" width="18" height="3" rx="1.5" fill="white" opacity="0.6"/>
+          <text x="105" y="135" text-anchor="middle" font-size="11" font-weight="700"
                 fill="#334155" font-family="'Noto Sans JP', sans-serif">現場担当者</text>
+          <!-- Badge above TL -->
+          <rect x="53" y="24" width="104" height="17" rx="8.5" fill="#4F46E5"/>
+          <text x="105" y="36" text-anchor="middle" font-size="8.5" font-weight="700"
+                fill="white" font-family="'Noto Sans JP', sans-serif">自動リマインド受信</text>
 
-          <!-- ═══ RIGHT NODE: Indeed AI ═══ -->
-          <circle cx="418" cy="158" r="40" fill="white" stroke="#D1FAE5" stroke-width="1.5"/>
-          <rect x="400" y="140" width="36" height="30" rx="6" fill="#003580"/>
-          <text x="418" y="160" text-anchor="middle" font-size="14" font-weight="900"
+          <!-- ══ TR NODE: Indeed AI ══ -->
+          <circle cx="395" cy="80" r="38" fill="white" stroke="#D1FAE5" stroke-width="1.5"/>
+          <rect x="377" y="62" width="36" height="30" rx="6" fill="#003580"/>
+          <text x="395" y="82" text-anchor="middle" font-size="14" font-weight="900"
                 fill="white" font-family="'Inter', sans-serif">in</text>
-          <text x="418" y="215" text-anchor="middle" font-size="12" font-weight="700"
+          <text x="395" y="135" text-anchor="middle" font-size="11" font-weight="700"
                 fill="#334155" font-family="'Noto Sans JP', sans-serif">Indeed AI</text>
-
-          <!-- ═══ KPI CARDS ═══ -->
-          <rect x="8" y="236" width="158" height="68" rx="12" fill="white" stroke="#E0E7FF" stroke-width="1"/>
-          <text x="87" y="258" text-anchor="middle" font-size="10.5" font-weight="700"
-                fill="#4338CA" font-family="'Noto Sans JP', sans-serif">未更新なら自動で再通知</text>
-          <text x="87" y="275" text-anchor="middle" font-size="9" fill="#64748B"
-                font-family="'Noto Sans JP', sans-serif">現場の対応遅れ・漏れをゼロに</text>
-          <rect x="16" y="282" width="142" height="1" fill="#E0E7FF"/>
-          <text x="87" y="297" text-anchor="middle" font-size="9" font-weight="700"
-                fill="#4F46E5" font-family="'Noto Sans JP', sans-serif">リードタイム 31h → 2h</text>
-
-          <rect x="334" y="236" width="158" height="68" rx="12" fill="white" stroke="#D1FAE5" stroke-width="1"/>
-          <text x="413" y="258" text-anchor="middle" font-size="10.5" font-weight="700"
-                fill="#065F46" font-family="'Noto Sans JP', sans-serif">採否データをIndeedへ連携</text>
-          <text x="413" y="275" text-anchor="middle" font-size="9" fill="#64748B"
-                font-family="'Noto Sans JP', sans-serif">AIが自社の採用基準を学習</text>
-          <rect x="342" y="282" width="142" height="1" fill="#D1FAE5"/>
-          <text x="413" y="297" text-anchor="middle" font-size="9" font-weight="700"
-                fill="#059669" font-family="'Noto Sans JP', sans-serif">有効応募率 最大3.1倍</text>
+          <!-- Badge above TR -->
+          <rect x="353" y="24" width="84" height="17" rx="8.5" fill="#059669"/>
+          <text x="395" y="36" text-anchor="middle" font-size="8.5" font-weight="700"
+                fill="white" font-family="'Noto Sans JP', sans-serif">AI学習・最適化</text>
 
         </svg>
       </div>
